@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'API Unifiée</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#0B121A', /* Dark navy/slate from images */
+                        card: '#111823',
+                        cardHover: '#1B2431',
+                        primary: '#3B82F6', /* Bright Blue */
+                        primaryLight: '#60A5FA',
+                        success: '#10B981', /* Bright Green */
+                        successDark: '#047857',
+                        danger: '#EF4444', /* Red */
+                        border: '#1E293B',
+                        textPrimary: '#FFFFFF',
+                        textSecondary: '#94A3B8',
+                        textMuted: '#64748B'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['"Space Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+                        display: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], /* For large headings */
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B121A;
+            color: #FFFFFF;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .grid-bg-subtle {
+            background-image:
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .grid-bg-admin {
+            background-image:
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Perspective Grid for Home Hero */
+        .perspective-grid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background-image:
+                linear-gradient(to right, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg) scale(2);
+            transform-origin: bottom center;
+            z-index: 0;
+            pointer-events: none;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .glass-hero {
+            background: linear-gradient(145deg, rgba(17, 24, 35, 0.8) 0%, rgba(11, 18, 26, 0.9) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .text-blue-gradient {
+            background: linear-gradient(to right, #60A5FA, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Logo Glows */
+        .logo-glow-anthropic {
+            box-shadow: 0 0 25px rgba(217, 119, 87, 0.4), inset 0 0 10px rgba(217, 119, 87, 0.2);
+            border-color: rgba(217, 119, 87, 0.5);
+        }
+        .logo-glow-google {
+            box-shadow: 0 0 25px rgba(66, 133, 244, 0.4), inset 0 0 10px rgba(66, 133, 244, 0.2);
+            border-color: rgba(66, 133, 244, 0.5);
+        }
+        .logo-glow-openai {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4), inset 0 0 10px rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        /* Custom Slider for Vote */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            margin-top: -8px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+            border: 2px solid #10B981;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: linear-gradient(to right, #10B981 80%, #1E293B 80%);
+            border-radius: 2px;
+        }
+
+        .btn-primary-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Monospace font class for Admin */
+        .font-admin {
+            font-family: 'Space Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-background text-textPrimary antialiased" x-data="{ currentTab: 'home' }">
+
+    <div class="max-w-md mx-auto min-h-screen relative bg-background overflow-hidden pb-20">
+
+        <!-- Tab Navigation (For testing purposes, can be removed or made sticky at bottom) -->
+        <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex space-x-2 bg-card/90 backdrop-blur-md px-6 py-3 rounded-full border border-border shadow-lg">
+            <button @click="currentTab = 'home'" :class="currentTab === 'home' ? 'text-primary' : 'text-textSecondary'" class="p-2 transition-colors duration-200">
+                <i class="fas fa-home text-lg"></i>
+            </button>
+            <button @click="currentTab = 'vote'" :class="currentTab === 'vote' ? 'text-primary' : 'text-textSecondary'" class="p-2 transition-colors duration-200">
+                <i class="fas fa-vote-yea text-lg"></i>
+            </button>
+            <button @click="currentTab = 'admin'" :class="currentTab === 'admin' ? 'text-primary' : 'text-textSecondary'" class="p-2 transition-colors duration-200">
+                <i class="fas fa-chart-line text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Home View (L'API Unifiée) -->
+        <div x-show="currentTab === 'home'" class="w-full min-h-screen relative">
+
+            <!-- Header -->
+            <div class="px-6 py-4 flex items-center justify-between sticky top-0 z-20 bg-background/80 backdrop-blur-sm">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center text-primary text-sm font-bold">
+                        &lt;&gt;
+                    </div>
+                    <span class="font-bold text-lg tracking-tight">L'API Unifiée</span>
+                </div>
+                <button class="text-sm font-semibold text-textSecondary hover:text-white transition-colors">
+                    Connexion
+                </button>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="relative px-6 pt-6 pb-12 overflow-hidden flex flex-col items-center">
+                <!-- Background Glow -->
+                <div class="absolute top-1/4 left-1/2 transform -translate-x-1/2 w-64 h-64 bg-success/20 rounded-full blur-[80px] z-0 pointer-events-none"></div>
+
+                <!-- Main Glass Card -->
+                <div class="glass-hero w-full rounded-3xl p-8 relative z-10 flex flex-col items-center text-center overflow-hidden">
+                    <div class="perspective-grid"></div>
+
+                    <!-- Latency Badge -->
+                    <div class="bg-successDark/30 border border-success/30 text-success text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center mb-8 tracking-widest relative z-10 uppercase shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                        <i class="fas fa-bolt mr-1.5"></i> Latence Record : < 50ms
+                    </div>
+
+                    <!-- Hero Text -->
+                    <h1 class="text-3xl font-extrabold leading-tight mb-8 relative z-10 tracking-tight">
+                        Accédez aux<br>
+                        derniers<br>
+                        modèles<br>
+                        Claude, Gemini<br>
+                        et ChatGPT <span class="text-blue-gradient">via</span><br>
+                        <span class="text-blue-gradient">API</span> à <span class="text-blue-gradient">-80%</span> du<br>
+                        prix officiel
+                    </h1>
+
+                    <!-- CTA Button -->
+                    <button class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-4 rounded-xl text-sm transition-colors relative z-10 btn-primary-glow mb-8">
+                        Commencer gratuitement
+                    </button>
+
+                    <!-- Logos -->
+                    <div class="flex items-center justify-center space-x-4 relative z-10">
+                        <!-- Anthropic -->
+                        <div class="w-14 h-14 rounded-2xl bg-card border border-textSecondary/30 flex items-center justify-center logo-glow-anthropic">
+                            <span class="text-2xl font-black text-white" style="font-family: serif;">A|</span>
+                        </div>
+                        <!-- Google (Gemini) -->
+                        <div class="w-14 h-14 rounded-2xl bg-card border border-textSecondary/30 flex items-center justify-center logo-glow-google">
+                            <i class="fab fa-google text-2xl" style="background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;"></i>
+                        </div>
+                        <!-- OpenAI -->
+                        <div class="w-14 h-14 rounded-2xl bg-card border border-textSecondary/30 flex items-center justify-center logo-glow-openai">
+                            <i class="fas fa-asterisk text-2xl text-success"></i> <!-- Placeholder for OpenAI logo -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Votes Count -->
+                <div class="mt-8 text-center flex flex-col items-center">
+                    <span class="text-[10px] text-textSecondary uppercase tracking-[0.2em] font-bold mb-1">Votes Enregistrés</span>
+                    <h2 class="text-5xl font-black tracking-tighter">12 458</h2>
+                    <div class="w-12 h-1 bg-primary rounded-full mt-3"></div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="px-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold">Dernières activités</h3>
+                    <div class="bg-successDark/30 border border-success/30 text-success text-[9px] font-bold px-2 py-1 rounded flex items-center tracking-wider uppercase">
+                        <div class="w-1.5 h-1.5 rounded-full bg-success mr-1.5 animate-pulse"></div>
+                        En direct
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <!-- Activity Item 1 -->
+                    <div class="bg-card/50 border border-border p-4 rounded-xl flex items-start">
+                        <div class="w-10 h-10 rounded-lg bg-[#1E293B] flex items-center justify-center mr-4 shrink-0">
+                            <i class="fas fa-layer-group text-primary text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-bold text-sm">Nouveau modèle ajouté</h4>
+                                <span class="text-textMuted text-xs">À l'instant</span>
+                            </div>
+                            <p class="text-textSecondary text-xs leading-relaxed">Claude 3.5 Sonnet est maintenant disponible via l'API standard.</p>
+                        </div>
+                    </div>
+
+                    <!-- Activity Item 2 -->
+                    <div class="bg-card/50 border border-border p-4 rounded-xl flex items-start">
+                        <div class="w-10 h-10 rounded-lg bg-[#1E293B] flex items-center justify-center mr-4 shrink-0">
+                            <i class="fas fa-tachometer-alt text-success text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-bold text-sm">Mise à jour réseau</h4>
+                                <span class="text-textMuted text-xs">Il y a 12 min</span>
+                            </div>
+                            <p class="text-textSecondary text-xs leading-relaxed">Latence globale réduite de 15% sur le cluster européen.</p>
+                        </div>
+                    </div>
+
+                    <!-- Activity Item 3 -->
+                    <div class="bg-card/50 border border-border p-4 rounded-xl flex items-start">
+                        <div class="w-10 h-10 rounded-lg bg-[#1E293B] flex items-center justify-center mr-4 shrink-0">
+                            <i class="fas fa-network-wired text-primaryLight text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-bold text-sm">Nouveau endpoint</h4>
+                                <span class="text-textMuted text-xs">Il y a 1h</span>
+                            </div>
+                            <p class="text-textSecondary text-xs leading-relaxed">Support natif pour les embeddings text-embedding-3-large.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Vote View -->
+        <div x-show="currentTab === 'vote'" class="w-full min-h-screen relative bg-gradient-to-b from-[#132238] to-[#0A1118]" style="display: none;">
+
+            <!-- Header -->
+            <div class="px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+                <button @click="currentTab = 'home'" class="text-textPrimary hover:text-white transition-colors">
+                    <i class="fas fa-chevron-left text-lg"></i>
+                </button>
+                <span class="font-bold text-sm tracking-tight text-white">Vote & Comparatif</span>
+                <div class="w-4"></div> <!-- Spacer for centering -->
+            </div>
+
+            <div class="px-6 pt-4 pb-24">
+                <!-- Title -->
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-extrabold text-white mb-3 tracking-tight">Votez le prochain LLM</h1>
+                    <p class="text-sm text-textSecondary leading-relaxed max-w-[280px] mx-auto">
+                        Aidez-nous à choisir le prochain modèle à intégrer à notre API unifiée à -80%.
+                    </p>
+                </div>
+
+                <!-- Form Card -->
+                <div class="bg-[#111823] border border-white/5 rounded-[24px] p-5 mb-10 shadow-xl">
+
+                    <!-- Country -->
+                    <div class="mb-5">
+                        <label class="block text-[10px] text-textSecondary font-bold tracking-wider mb-2 uppercase">Pays de résidence</label>
+                        <div class="bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl leading-none">🇫🇷</span>
+                                <span class="text-sm font-semibold text-white">France</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-textSecondary text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Model -->
+                    <div class="mb-5">
+                        <label class="block text-[10px] text-textSecondary font-bold tracking-wider mb-2 uppercase">Modèle souhaité</label>
+                        <div class="bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-6 h-6 rounded bg-[#D97757] flex items-center justify-center">
+                                    <span class="text-xs font-black text-white" style="font-family: serif;">A|</span>
+                                </div>
+                                <span class="text-sm font-semibold text-white">Claude 3.5 Sonnet</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-textSecondary text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Intensity -->
+                    <div class="mb-5" x-data="{ intensity: 8 }">
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-[10px] text-textSecondary font-bold tracking-wider uppercase">Intensité d'utilisation prévue</label>
+                            <span class="text-[10px] font-bold text-success bg-success/10 px-2 py-0.5 rounded-full" x-text="intensity + '/10'">8/10</span>
+                        </div>
+                        <div class="relative w-full h-2 bg-[#1A2332] rounded-full">
+                            <div class="absolute top-0 left-0 h-full bg-success rounded-full" :style="'width: ' + (intensity * 10) + '%'"></div>
+                            <input type="range" x-model="intensity" min="1" max="10" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <!-- Custom thumb representation -->
+                            <div class="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white border-2 border-success rounded-full shadow-[0_0_10px_rgba(16,185,129,0.8)] pointer-events-none" :style="'left: calc(' + (intensity * 10) + '% - 10px)'"></div>
+                        </div>
+                    </div>
+
+                    <!-- Use case -->
+                    <div class="mb-5">
+                        <label class="block text-[10px] text-textSecondary font-bold tracking-wider mb-2 uppercase">Cas d'usage (Optionnel)</label>
+                        <textarea class="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3 text-sm text-white placeholder-textSecondary/50 focus:outline-none focus:border-primary/50 resize-none h-24" placeholder="Ex: Développement d'applications mobiles, automatisation de mails..."></textarea>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-6">
+                        <label class="block text-[10px] text-textSecondary font-bold tracking-wider mb-2 uppercase">Me prévenir du lancement</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-at text-textSecondary/70 text-sm"></i>
+                            </div>
+                            <input type="text" class="w-full bg-[#1A2332] border border-white/5 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-textSecondary/50 focus:outline-none focus:border-primary/50" placeholder="Email ou n° WhatsApp">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button class="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-bold py-4 rounded-xl text-sm transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)] flex items-center justify-center space-x-2">
+                        <span>Soumettre mon vote</span>
+                        <div class="w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-[#3B82F6] text-[10px]"></i>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Comparatif -->
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white leading-tight">Comparatif des prix<br>API</h2>
+                    <div class="bg-success text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase leading-tight text-center shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                        Jusqu'à<br>-80%
+                    </div>
+                </div>
+
+                <div class="space-y-3 mb-6">
+                    <!-- GPT-4o -->
+                    <div class="bg-gradient-to-r from-[#122426] to-[#0D181C] border border-success/10 p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-[#0F2823] flex items-center justify-center">
+                                <i class="fas fa-asterisk text-success text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-0.5">
+                                    <h3 class="font-bold text-white text-sm">GPT-4o</h3>
+                                    <span class="bg-white text-black text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">Fast</span>
+                                </div>
+                                <p class="text-[10px] text-textSecondary">Pour 1M tokens (moyenne)</p>
+                            </div>
+                        </div>
+                        <div class="text-right flex flex-col items-end">
+                            <p class="text-[10px] text-textSecondary line-through mb-0.5">Prix officiel = $15.00</p>
+                            <div class="flex items-center space-x-1.5">
+                                <span class="font-bold text-lg text-primaryLight">$3.00</span>
+                                <i class="fas fa-arrow-down text-success text-[10px]"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Claude 3.5 Sonnet -->
+                    <div class="bg-gradient-to-r from-[#19211D] to-[#0D181C] border border-success/10 p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-[#D97757] flex items-center justify-center">
+                                <span class="text-lg font-black text-white" style="font-family: serif;">A|</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2 mb-0.5">
+                                    <h3 class="font-bold text-white text-sm leading-tight">Claude 3.5<br>Sonnet</h3>
+                                    <span class="bg-[#F97316] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">New</span>
+                                </div>
+                                <p class="text-[10px] text-textSecondary">Pour 1M tokens (moyenne)</p>
+                            </div>
+                        </div>
+                        <div class="text-right flex flex-col items-end">
+                            <p class="text-[10px] text-textSecondary line-through mb-0.5">Prix officiel = $9.00</p>
+                            <div class="flex items-center space-x-1.5">
+                                <span class="font-bold text-lg text-primaryLight">$1.80</span>
+                                <i class="fas fa-arrow-down text-success text-[10px]"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Alert -->
+                <div class="bg-[#0A262E] border border-[#144A55] rounded-xl p-4 text-center">
+                    <p class="text-[11px] text-[#A5F3FC] leading-relaxed">
+                        La facturation sera de tel sorte que pour <span class="font-bold text-white">1 500 XAF</span> on bénéficie de <span class="font-bold text-white">10$</span> d'API pour n'importe quel modèle et pour <span class="font-bold text-white">14 000 XAF</span> on bénéficie de <span class="font-bold text-white">100$</span>.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Admin View -->
+        <div x-show="currentTab === 'admin'" class="w-full min-h-screen bg-[#0B121A] text-white font-admin" style="display: none;">
+
+            <!-- Header -->
+            <div class="px-5 py-4 flex items-center justify-between border-b border-white/5 bg-[#0B121A]/90 sticky top-0 z-20 backdrop-blur-sm">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded bg-danger/20 flex items-center justify-center border border-danger/30">
+                        <i class="fas fa-shield-alt text-danger text-sm"></i>
+                    </div>
+                    <span class="font-bold tracking-widest text-sm">ADMIN CONSOLE</span>
+                </div>
+                <div class="bg-successDark/20 border border-success/20 text-success text-[9px] font-bold px-2 py-1 rounded flex items-center tracking-widest uppercase">
+                    <div class="w-1.5 h-1.5 rounded-full bg-success mr-1.5 animate-pulse shadow-[0_0_5px_#10B981]"></div>
+                    SYS_ONLINE
+                </div>
+            </div>
+
+            <div class="px-5 pt-5 pb-24 space-y-4">
+
+                <!-- Total Votes Card -->
+                <div class="bg-[#111823] border border-white/5 rounded-xl p-6 relative overflow-hidden flex flex-col items-center justify-center text-center">
+                    <div class="absolute inset-0 grid-bg-admin opacity-20 pointer-events-none"></div>
+                    <div class="flex items-center space-x-1.5 mb-2 text-textSecondary relative z-10">
+                        <i class="fas fa-chart-bar text-[10px]"></i>
+                        <span class="text-[10px] font-bold tracking-widest uppercase">TOTAL VOTES</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-success mb-2 tracking-tighter relative z-10 shadow-success drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">14,285</h2>
+                    <div class="flex items-center space-x-1.5 text-success text-[10px] relative z-10">
+                        <i class="fas fa-arrow-trend-up"></i>
+                        <span>+12% vs last 24h</span>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Taux Conv -->
+                    <div class="bg-[#111823] border border-white/5 rounded-xl p-4">
+                        <div class="flex items-center space-x-1.5 mb-2 text-textSecondary">
+                            <i class="fas fa-crosshairs text-[10px]"></i>
+                            <span class="text-[9px] font-bold tracking-widest uppercase">TAUX CONV.</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-1">8.4%</h3>
+                        <p class="text-[9px] text-textSecondary">Visites: 170k</p>
+                    </div>
+                    <!-- Usagers Actifs -->
+                    <div class="bg-[#111823] border border-white/5 rounded-xl p-4">
+                        <div class="flex items-center space-x-1.5 mb-2 text-textSecondary">
+                            <i class="fas fa-users text-[10px]"></i>
+                            <span class="text-[9px] font-bold tracking-widest uppercase">USAGERS ACTIFS</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary mb-1 drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]">3,402</h3>
+                        <p class="text-[9px] text-textSecondary">En temps réel</p>
+                    </div>
+                </div>
+
+                <!-- Analyse des Votes Chart Placeholder -->
+                <div class="bg-[#111823] border border-white/5 rounded-xl p-5">
+                    <div class="flex items-center space-x-2 mb-6 text-white">
+                        <i class="fas fa-chart-line text-primary text-xs"></i>
+                        <span class="text-xs font-bold tracking-widest uppercase">ANALYSE DES VOTES</span>
+                    </div>
+
+                    <!-- Chart Graphic (CSS based) -->
+                    <div class="relative h-24 mb-6 border-b border-l border-white/10 pb-1 pl-1 text-[8px] text-textSecondary">
+                        <div class="absolute top-0 left-[-15px] transform -translate-y-1/2">5k</div>
+                        <div class="absolute top-1/2 left-[-20px] transform -translate-y-1/2">2.5k</div>
+                        <div class="absolute bottom-[-15px] left-0">0</div>
+                        <div class="absolute bottom-[-15px] right-0">Auj</div>
+
+                        <!-- Real line -->
+                        <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                            <path d="M0,80 Q20,70 40,60 T100,40 T200,20 T300,10" fill="none" stroke="#10B981" stroke-width="2" vector-effect="non-scaling-stroke" opacity="0.8"/>
+                        </svg>
+                        <!-- Gen line -->
+                        <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                            <path d="M0,90 Q40,85 80,75 T150,60 T250,50 T300,45" fill="none" stroke="#3B82F6" stroke-width="2" stroke-dasharray="4,4" vector-effect="non-scaling-stroke" opacity="0.8"/>
+                        </svg>
+                    </div>
+
+                    <div class="flex items-center justify-center space-x-6 text-[10px]">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 rounded-full bg-success"></div>
+                            <span>Réels (68%)</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 rounded-full bg-primary"></div>
+                            <span>Générés (32%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Repartition par pays -->
+                <div class="bg-[#111823] border border-white/5 rounded-xl p-5">
+                    <div class="flex items-center space-x-2 mb-6 text-white">
+                        <i class="fas fa-globe-americas text-success text-xs"></i>
+                        <span class="text-xs font-bold tracking-widest uppercase">RÉPARTITION PAR PAYS</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- France -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5 text-[10px]">
+                                <div class="flex items-center space-x-2">
+                                    <span>🇫🇷</span>
+                                    <span>France</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5 text-textSecondary">
+                                    <i class="fas fa-crosshairs"></i>
+                                    <span>4 210 votes</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-[#1A2332] h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-success h-full rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <!-- USA -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5 text-[10px]">
+                                <div class="flex items-center space-x-2">
+                                    <span>🇺🇸</span>
+                                    <span>États-Unis</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5 text-textSecondary">
+                                    <i class="fas fa-crosshairs"></i>
+                                    <span>3 105 votes</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-[#1A2332] h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-success h-full rounded-full" style="width: 55%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Japon -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5 text-[10px]">
+                                <div class="flex items-center space-x-2">
+                                    <span>🇯🇵</span>
+                                    <span>Japon</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5 text-textSecondary">
+                                    <i class="fas fa-crosshairs"></i>
+                                    <span>1 840 votes</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-[#1A2332] h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-success h-full rounded-full" style="width: 35%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Allemagne -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5 text-[10px]">
+                                <div class="flex items-center space-x-2">
+                                    <span>🇩🇪</span>
+                                    <span>Allemagne</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5 text-textSecondary">
+                                    <i class="fas fa-crosshairs"></i>
+                                    <span>1 200 votes</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-[#1A2332] h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-success h-full rounded-full" style="width: 20%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Derniers Votes -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4 text-white px-1">
+                        <i class="fas fa-list text-xs text-textSecondary"></i>
+                        <span class="text-xs font-bold tracking-widest uppercase">DERNIERS VOTES (LIVE)</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Vote 1 -->
+                        <div class="bg-[#111823] border border-white/5 rounded-xl p-4 border-l-2 border-l-success">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[10px]">🇫🇷</span>
+                                    <span class="text-[11px] font-bold">usr_8fk2a</span>
+                                    <span class="bg-successDark/20 text-success text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">RÉEL</span>
+                                </div>
+                                <span class="text-textSecondary text-[9px]">-12s</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-[10px] text-textSecondary mb-3">
+                                <span>› Vote pour:</span>
+                                <span class="text-[#D97757] font-bold flex items-center space-x-1.5">
+                                    <span style="font-family: serif; font-weight: 900;" class="text-xs">A|</span>
+                                    <span class="text-white">Claude 3 Opus</span>
+                                </span>
+                            </div>
+                            <div class="w-full bg-[#1A2332] h-1 rounded-full overflow-hidden">
+                                <div class="bg-success h-full rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Vote 2 -->
+                        <div class="bg-[#111823] border border-white/5 rounded-xl p-4 border-l-2 border-l-primary relative">
+                            <!-- Blue indicator line on the left -->
+                            <div class="absolute left-[-2px] top-0 bottom-0 w-[2px] bg-primary"></div>
+
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[10px]">🇺🇸</span>
+                                    <span class="text-[11px] font-bold">bot_mk7</span>
+                                    <span class="bg-primary/20 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">GÉNÉRÉ</span>
+                                </div>
+                                <span class="text-textSecondary text-[9px]">-45s</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-[10px] text-textSecondary mb-3">
+                                <span>› Vote pour:</span>
+                                <span class="text-white font-bold flex items-center space-x-1.5">
+                                    <i class="fas fa-atom text-textSecondary"></i>
+                                    <span>API GraphQL</span>
+                                </span>
+                            </div>
+                            <div class="w-full bg-[#1A2332] h-1 rounded-full overflow-hidden">
+                                <div class="bg-primary h-full rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Vote 3 -->
+                        <div class="bg-[#111823] border border-white/5 rounded-xl p-4 border-l-2 border-l-success">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[10px]">🇯🇵</span>
+                                    <span class="text-[11px] font-bold">usr_2041d</span>
+                                    <span class="bg-successDark/20 text-success text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">RÉEL</span>
+                                </div>
+                                <span class="text-textSecondary text-[9px]">-2m</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-[10px] text-textSecondary mb-3">
+                                <span>› Vote pour:</span>
+                                <span class="text-white font-bold flex items-center space-x-1.5">
+                                    <i class="fas fa-video text-textSecondary"></i>
+                                    <span>Intégration Notion</span>
+                                </span>
+                            </div>
+                            <div class="w-full bg-[#1A2332] h-1 rounded-full overflow-hidden">
+                                <div class="bg-success h-full rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
