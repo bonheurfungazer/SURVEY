@@ -650,50 +650,52 @@ export default function Home() {
         .limit(100)
 
       if (recentData && recentData.length > 0) {
-        // Calculate chart line points
-        // Get votes from the last 24h, group by hour for the chart
-        const chartVotes = recentData.slice().reverse() // chronological order
+        // We will fetch 24h data grouped by hour to match the server-side logic
+        const { data: chartData } = await supabase
+            .from('votes')
+            .select('created_at')
+            .eq('is_real_user', true)
+            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
-        // Simple logic to distribute points across the X axis (0 to 300)
-        // Y axis goes from 90 (bottom) to 10 (top)
+        let realLineStr = "M0,90 L300,90";
+        if (chartData && chartData.length > 0) {
+            const hourlyCounts = new Array(24).fill(0);
+            chartData.forEach(vote => {
+                const hour = new Date(vote.created_at).getHours();
+                hourlyCounts[hour]++;
+            });
 
-        let realVotesCount = 0;
-        let genVotesCount = 0;
+            const maxVotesPerHour = Math.max(...hourlyCounts, 1);
 
-        // Let's create an array of points for the paths
-        const realPoints: {x: number, y: number}[] = [{x: 0, y: 90}]
-        const genPoints: {x: number, y: number}[] = [{x: 0, y: 90}, {x: 300, y: 90}]
+            const realPoints = hourlyCounts.map((count, index) => {
+                const x = (index / 23) * 300; // 24 points (0 to 23), mapped to 0-300 width
+                const y = 90 - (count / maxVotesPerHour) * 80; // Map 0-max to 90-10 height
+                return { x, y };
+            });
 
-        const totalVotesChart = chartVotes.length;
-        const width = 300;
+            const generatePath = (points: {x: number, y: number}[]) => {
+                if (points.length === 0) return "M0,90";
+                if (points.length === 1) return `M${points[0].x},${points[0].y}`;
+                if (points.length === 2) return `M${points[0].x},${points[0].y} L${points[1].x},${points[1].y}`;
 
-        chartVotes.forEach((v, idx) => {
-            const x = Math.round((idx + 1) * (width / totalVotesChart));
-            if (v.is_real_user) {
-                realVotesCount++;
-            }
-            const realY = 90 - (Math.min(realVotesCount / totalVotesChart, 1) * 80);
-            realPoints.push({x, y: realY});
-        });
+                let path = `M${points[0].x},${points[0].y}`;
+                for (let i = 0; i < points.length - 1; i++) {
+                    const xc = (points[i].x + points[i + 1].x) / 2;
+                    const yc = (points[i].y + points[i + 1].y) / 2;
+                    // Use bezier curves for smoother graph
+                    if (i === 0) {
+                        path += ` Q${points[i].x},${points[i].y} ${xc},${yc}`;
+                    } else {
+                        path += ` T${xc},${yc}`;
+                    }
+                }
+                path += ` T${points[points.length - 1].x},${points[points.length - 1].y}`;
+                return path;
+            };
 
-        // Function to convert points to an SVG path curve
-        const generatePath = (points: {x: number, y: number}[]) => {
-            if (points.length === 0) return "M0,90";
-            if (points.length === 1) return `M${points[0].x},${points[0].y}`;
-            if (points.length === 2) return `M${points[0].x},${points[0].y} L${points[1].x},${points[1].y}`;
+            realLineStr = generatePath(realPoints);
+        }
 
-            let path = `M${points[0].x},${points[0].y}`;
-            for (let i = 1; i < points.length - 1; i++) {
-                const xc = (points[i].x + points[i + 1].x) / 2;
-                const yc = (points[i].y + points[i + 1].y) / 2;
-                path += ` Q${points[i].x},${points[i].y} ${xc},${yc}`;
-            }
-            // Curve to the last point
-            path += ` T${points[points.length - 1].x},${points[points.length - 1].y}`;
-            return path;
-        };
-
-        const realLineStr = generatePath(realPoints);
         const genLineStr = "M0,90 L300,90";
 
         setAdminStats(prev => ({
@@ -955,12 +957,12 @@ export default function Home() {
                     </h1>
 
                     {!user ? (
-                        <button onClick={() => {setShowLoginModal(true); setIsSignUp(true);}} className="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-bold py-4 rounded-xl text-sm transition-colors relative z-10 btn-primary-glow mb-8 flex items-center justify-center space-x-2">
+                        <button onClick={() => {setShowLoginModal(true); setIsSignUp(true);}} className="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-bold py-4 rounded-xl text-sm transition-all duration-200 active:scale-95 relative z-10 btn-primary-glow mb-8 flex items-center justify-center space-x-2">
                             <i className="fas fa-user-plus"></i>
                             <span>Créer un compte pour voter</span>
                         </button>
                     ) : (
-                        <button onClick={() => setCurrentTab('vote')} className="w-full bg-[#10B981] hover:bg-[#047857] text-white font-bold py-4 rounded-xl text-sm transition-colors relative z-10 shadow-[0_0_20px_rgba(16,185,129,0.4)] mb-8 flex items-center justify-center space-x-2">
+                        <button onClick={() => setCurrentTab('vote')} className="w-full bg-[#10B981] hover:bg-[#047857] text-white font-bold py-4 rounded-xl text-sm transition-all duration-200 active:scale-95 relative z-10 shadow-[0_0_20px_rgba(16,185,129,0.4)] mb-8 flex items-center justify-center space-x-2">
                             <span>Voter maintenant</span>
                             <i className="fas fa-arrow-right"></i>
                         </button>
@@ -1030,7 +1032,7 @@ export default function Home() {
                 <div className="text-center mb-8">
                     <h1 className="text-[28px] font-extrabold text-white mb-3 tracking-tight leading-tight">L'API Unifiée pour <span className="text-[#3B82F6]">Claude Code</span>, Gemini & Codex</h1>
                     <p className="text-sm text-[#94A3B8] leading-relaxed max-w-[320px] mx-auto">
-                        Connectez directement vos outils CLI préférés (Claude Code, Gemini CLI, Aider, Codex) à notre API unifiée et développez à <strong>-80% du prix officiel</strong>.
+                        Connectez directement vos outils CLI préférés (Claude Code, Gemini CLI, Codex) à notre API unifiée et développez à <strong>-80% du prix officiel</strong>.
                         <br/><span className="mt-2 block text-[#10B981]">Exportez simplement la clé API et codez !</span>
                     </p>
                 </div>
@@ -1340,12 +1342,12 @@ export default function Home() {
                         </div>
 
                         {!user ? (
-                            <button type="button" onClick={() => {setShowLoginModal(true); setIsSignUp(false);}} className="w-full font-bold py-4 rounded-xl text-sm transition-colors flex items-center justify-center space-x-2 bg-[#3B82F6] hover:bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)]">
+                            <button type="button" onClick={() => {setShowLoginModal(true); setIsSignUp(false);}} className="w-full font-bold py-4 rounded-xl text-sm transition-all duration-200 active:scale-95 flex items-center justify-center space-x-2 bg-[#3B82F6] hover:bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)]">
                                 <i className="fas fa-sign-in-alt"></i>
                                 <span>Connectez-vous pour voter</span>
                             </button>
                         ) : (
-                            <button type="submit" disabled={isSubmitting || voteSuccess} className={`w-full font-bold py-4 rounded-xl text-sm transition-colors flex items-center justify-center space-x-2 ${voteSuccess ? 'bg-[#10B981] text-white' : 'bg-[#3B82F6] hover:bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)]'}`}>
+                            <button type="submit" disabled={isSubmitting || voteSuccess} className={`w-full font-bold py-4 rounded-xl text-sm transition-all duration-200 active:scale-95 flex items-center justify-center space-x-2 ${voteSuccess ? 'bg-[#10B981] text-white' : 'bg-[#3B82F6] hover:bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)]'}`}>
                                 {!isSubmitting && !voteSuccess && (
                                     <div className="flex items-center space-x-2">
                                         <span>Soumettre mon vote</span>
