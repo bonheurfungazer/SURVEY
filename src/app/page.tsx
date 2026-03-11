@@ -950,10 +950,9 @@ export default function Home() {
                         <i className="fas fa-bolt mr-1.5"></i> Latence Record : &lt; 50ms
                     </div>
 
-                    <h1 className="text-[28px] font-extrabold leading-tight mb-8 relative z-10 tracking-tight text-white">
-                        Accélérez votre<br/>terminal avec<br/>
-                        <span className="text-[#3B82F6]">Claude Code,</span><br/>Gemini CLI & Codex<br/>
-                        <span className="text-blue-gradient">via API</span> à <span className="text-blue-gradient">-80%</span><br/>du prix officiel
+                    <h1 className="text-3xl font-extrabold leading-tight mb-8 relative z-10 tracking-tight">
+                        Accédez aux<br/>derniers<br/>modèles<br/>Claude, Gemini<br/>et ChatGPT <span className="text-blue-gradient">via</span><br/>
+                        <span className="text-blue-gradient">API</span> à <span className="text-blue-gradient">-80%</span> du<br/>prix officiel
                     </h1>
 
                     {!user ? (
@@ -1030,11 +1029,14 @@ export default function Home() {
 
             <div className="px-6 pt-4 pb-24">
                 <div className="text-center mb-8">
-                    <h1 className="text-[28px] font-extrabold text-white mb-3 tracking-tight leading-tight">L'API Unifiée pour <span className="text-[#3B82F6]">Claude Code</span>, Gemini & Codex</h1>
-                    <p className="text-sm text-[#94A3B8] leading-relaxed max-w-[320px] mx-auto">
-                        Connectez directement vos outils CLI préférés (Claude Code, Gemini CLI, Codex) à notre API unifiée et développez à <strong>-80% du prix officiel</strong>.
-                        <br/><span className="mt-2 block text-[#10B981]">Exportez simplement la clé API et codez !</span>
+                    <h1 className="text-3xl font-extrabold text-white mb-3 tracking-tight">Votez le prochain LLM</h1>
+                    <p className="text-sm text-[#94A3B8] leading-relaxed max-w-[280px] mx-auto mb-4">
+                        Participez au choix du prochain modèle à intégrer à notre API unifiée à -80%.
                     </p>
+                    <div className="inline-flex items-center justify-center space-x-2 bg-[#1A2332] border border-[#3B82F6]/30 px-4 py-2 rounded-full text-xs font-semibold text-[#E2E8F0] shadow-sm">
+                        <i className="fas fa-terminal text-[#3B82F6]"></i>
+                        <span>Compatible avec Claude Code, Gemini CLI & Codex</span>
+                    </div>
                 </div>
 
                 <div className="bg-[#111823] border border-white/5 rounded-[24px] p-5 mb-10 shadow-xl">
