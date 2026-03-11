@@ -22,3 +22,4 @@
  POST / 200 in 12ms (compile: 3ms, render: 9ms)
  GET / 200 in 73ms (compile: 4ms, render: 69ms)
  POST / 200 in 12ms (compile: 3ms, render: 9ms)
+✓ Compiled in 1293ms

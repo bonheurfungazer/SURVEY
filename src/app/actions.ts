@@ -136,21 +136,32 @@ export async function fetchSensitiveAdminData() {
             percent: realVotesCount > 0 ? parseFloat(((c.count / realVotesCount) * 100).toFixed(1)) : 0
         }));
 
-      // Calculate new graph paths for real data only
-      const chartVotes = realVotesData?.slice(0, 100).reverse() || [];
-      const realPoints: {x: number, y: number}[] = [{x: 0, y: 90}];
-      const genPoints: {x: number, y: number}[] = [{x: 0, y: 90}, {x: 300, y: 90}]; // Flat line for generated
-
-      const totalVotesChart = chartVotes.length > 0 ? chartVotes.length : 1;
+      // Calculate new graph paths for real data dynamically based on time of day (24h)
       const width = 300;
-      let rCount = 0;
+      const height = 90;
 
-      chartVotes.forEach((v, idx) => {
-          const x = Math.round((idx + 1) * (width / totalVotesChart));
-          rCount++;
-          const realY = 90 - (Math.min(rCount / totalVotesChart, 1) * 80);
-          realPoints.push({x, y: realY});
+      // Group votes by hour (0-23)
+      const votesByHour: Record<number, number> = {};
+      for (let i = 0; i < 24; i++) votesByHour[i] = 0;
+
+      realVotesData?.forEach((v: any) => {
+          const hour = new Date(v.created_at).getHours();
+          votesByHour[hour]++;
       });
+
+      const maxVotesPerHour = Math.max(...Object.values(votesByHour), 1); // Avoid division by zero
+
+      const realPoints: {x: number, y: number}[] = [];
+      const genPoints: {x: number, y: number}[] = [{x: 0, y: height}, {x: width, y: height}]; // Flat line for fake
+
+      for (let i = 0; i <= 24; i++) {
+          const x = Math.round((i / 24) * width);
+          // If i=24, map to hour 0 to close the day loop visually, or just use hour 23
+          const hourData = i === 24 ? votesByHour[23] : votesByHour[i];
+          // y goes from 90 (bottom) to 10 (top)
+          const y = height - Math.round((hourData / maxVotesPerHour) * 80);
+          realPoints.push({x, y});
+      }
 
       const generatePath = (points: {x: number, y: number}[]) => {
           if (points.length === 0) return "M0,90";
