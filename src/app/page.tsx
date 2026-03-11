@@ -26,7 +26,7 @@ export default function Home() {
   const [voteForm, setVoteForm] = useState({
     country: 'Cameroun',
     countryCode: 'CM',
-    model: 'Claude 3.5 Sonnet',
+    model: 'Claude Opus 4.6 (et antérieures)',
     intensity: 8,
     useCase: '',
     contact: ''
@@ -453,11 +453,11 @@ export default function Home() {
 
         setAdminStats(prev => ({
           ...prev,
-          latestVotes: recentData.slice(0, 3).map(v => ({
+          latestVotes: recentData.slice(0, 10).map(v => ({
             user: 'usr_' + v.id.substring(0, 5),
             flag: getFlagEmoji(v.country_code),
             model: v.model_choice,
-            time: new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
+            time: new Date(v.created_at).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
             real: v.is_real_user
           })),
           chartData: { realLine: realLineStr, genLine: genLineStr }
@@ -482,10 +482,10 @@ export default function Home() {
                   user: 'usr_' + payload.new.id.substring(0, 5),
                   flag: getFlagEmoji(payload.new.country_code),
                   model: payload.new.model_choice,
-                  time: new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
+                  time: new Date(payload.new.created_at || new Date()).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
                   real: payload.new.is_real_user
               }
-              const newLatest = [newVote, ...prev.latestVotes].slice(0, 3)
+              const newLatest = [newVote, ...prev.latestVotes].slice(0, 10)
 
               // Mettre à jour la répartition par pays en direct
               // ATTENTION : L'admin est connecté (il ne voit que les vrais). Si un "faux" vote arrive (is_real_user=false), l'admin ne doit pas le voir.
@@ -720,21 +720,15 @@ export default function Home() {
                     )}
 
                     <div className="flex items-center justify-center space-x-4 relative z-10">
-                        <div className="w-14 h-14 rounded-2xl bg-[#111823] border border-[#94A3B8]/30 flex items-center justify-center logo-glow-anthropic">
-                            <span className="text-2xl font-black text-white" style={{fontFamily: 'serif'}}>A|</span>
-                        </div>
-                        <div className="w-14 h-14 rounded-2xl bg-[#111823] border border-[#94A3B8]/30 flex items-center justify-center logo-glow-google">
-                            <i className="fab fa-google text-2xl" style={{background: 'conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', WebkitTextFillColor: 'transparent'}}></i>
-                        </div>
-                        <div className="w-14 h-14 rounded-2xl bg-[#111823] border border-[#94A3B8]/30 flex items-center justify-center logo-glow-openai">
-                            <i className="fas fa-asterisk text-2xl text-[#10B981]"></i>
-                        </div>
+                        <div className="w-14 h-14 rounded-2xl bg-[#111823] border border-[#94A3B8]/30 flex items-center justify-center logo-glow-anthropic"><svg fill="#D97757" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8"><title>Anthropic</title><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg></div>
+                        <div className="w-14 h-14 rounded-2xl bg-[#111823] border border-[#94A3B8]/30 flex items-center justify-center logo-glow-google"><svg fill="url(#gemini_paint)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8"><title>Google Gemini</title><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/><defs><linearGradient id="gemini_paint" x1="12" y1="0" x2="12" y2="24" gradientUnits="userSpaceOnUse"><stop stopColor="#1B73E8"/><stop offset="0.5" stopColor="#D93025"/><stop offset="1" stopColor="#F29900"/></linearGradient></defs></svg></div>
+                        <div className="w-14 h-14 rounded-2xl bg-[#111823] border border-[#94A3B8]/30 flex items-center justify-center logo-glow-openai"><svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8"><title>OpenAI</title><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></svg></div>
                     </div>
                 </div>
 
                 <div className="mt-8 text-center flex flex-col items-center">
                     <span className="text-[10px] text-[#94A3B8] uppercase tracking-[0.2em] font-bold mb-1">Votes Enregistrés</span>
-                    <h2 className="text-5xl font-black tracking-tighter">12 458</h2>
+                    <h2 className="text-5xl font-black tracking-tighter">{adminStats.totalVotes.toLocaleString("fr-FR")}</h2>
                     <div className="w-12 h-1 bg-[#3B82F6] rounded-full mt-3"></div>
                 </div>
             </div>
@@ -1060,10 +1054,9 @@ export default function Home() {
                             <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Modèle souhaité</label>
                             <div className="relative">
                                 <select value={voteForm.model} onChange={(e) => setVoteForm({...voteForm, model: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none focus:outline-none focus:border-[#3B82F6]/50">
-                                    <option value="Claude 3.5 Sonnet">Claude 3.5 Sonnet</option>
-                                    <option value="GPT-4o">GPT-4o</option>
-                                    <option value="Claude 3 Opus">Claude 3 Opus</option>
-                                    <option value="Gemini 1.5 Pro">Gemini 1.5 Pro</option>
+                                    <option value="Claude Opus 4.6 (et antérieures)">Claude Opus 4.6 (et versions 2026 en descendant)</option>
+                                    <option value="GPT-5.4 Thinking (et antérieures)">GPT-5.4 Thinking (et versions 2026 en descendant)</option>
+                                    <option value="Gemini 3.1 Pro (et antérieures)">Gemini 3.1 Pro (et versions 2026 en descendant)</option>
                                 </select>
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#94A3B8]">
                                     <i className="fas fa-chevron-down text-xs"></i>
@@ -1132,15 +1125,37 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-3 mb-6">
-                    <div className="bg-gradient-to-r from-[#122426] to-[#0D181C] border border-[#10B981]/10 p-4 rounded-xl flex items-center justify-between">
+                    <div className="bg-gradient-to-r from-[#122426] to-[#0D181C] border border-[#10B981]/10 p-4 rounded-xl flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 rounded-lg bg-[#0F2823] flex items-center justify-center">
-                                <i className="fas fa-asterisk text-[#10B981] text-xl"></i>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .515 4.911 6.05 6.05 0 0 0 6.515 2.9 6.065 6.065 0 0 0 10.276-2.17 5.99 5.99 0 0 0 3.997-2.9 6.05 6.05 0 0 0-.748-7.097zM12.083 20.443c-1.928 0-3.722-.962-4.821-2.584l6.095-3.518V7.306l2.946 1.7-4.22 11.437zM4.615 15.65c-.964-1.666-1.12-3.712-.42-5.503L10.29 13.67v6.868l-2.946-1.7v-3.188zm1.88-9.452c.965-1.667 2.684-2.73 4.61-2.73v7.037L5.008 7.031l2.946-1.7 1.492 3.19zm11.009.61c.963 1.667 1.12 3.713.42 5.504l-6.096-3.522v-6.87l2.946 1.701v3.187zm-1.88 9.451c-.965 1.667-2.684 2.73-4.61 2.73V11.953l6.097 3.473-2.946 1.701-1.493-3.19zM11.917 3.557c1.928 0 3.722.962 4.821 2.585L10.643 9.66V16.69l-2.946-1.7V3.557zm1.616 9.389-3.056-1.763v-3.526l3.056-1.763 3.056 1.763v3.526l-3.056 1.763z"/></svg>
                             </div>
                             <div>
                                 <div className="flex items-center space-x-2 mb-0.5">
-                                    <h3 className="font-bold text-white text-sm">GPT-4o</h3>
-                                    <span className="bg-white text-black text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">Fast</span>
+                                    <h3 className="font-bold text-white text-sm leading-tight">GPT-5.4<br/>Thinking</h3>
+                                    <span className="bg-[#10B981] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">2026</span>
+                                </div>
+                                <p className="text-[10px] text-[#94A3B8]">Pour 1M tokens (moyenne)</p>
+                            </div>
+                        </div>
+                        <div className="text-right flex flex-col items-end">
+                            <p className="text-[10px] text-[#94A3B8] line-through mb-0.5">Prix officiel = $20.00</p>
+                            <div className="flex items-center space-x-1.5">
+                                <span className="font-bold text-lg text-[#60A5FA]">$4.00</span>
+                                <i className="fas fa-arrow-down text-[#10B981] text-[10px]"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-[#19211D] to-[#0D181C] border border-[#10B981]/10 p-4 rounded-xl flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 rounded-lg bg-[#2D2A26] border border-[#D2996E]/30 flex items-center justify-center">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5"><path d="M14.5 5.5l-9 13H8.5l9-13h-3z" fill="#E2E0D4"/><path d="M5.5 18.5h3L11.5 13H8.5l-3 5.5z" fill="#E2E0D4"/><path d="M19.5 18.5h-3l-3-5.5h3l3 5.5z" fill="#D2996E"/></svg>
+                            </div>
+                            <div>
+                                <div className="flex items-center space-x-2 mb-0.5">
+                                    <h3 className="font-bold text-white text-sm leading-tight">Claude Opus<br/>4.6</h3>
+                                    <span className="bg-[#D2996E] text-[#111823] text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">2026</span>
                                 </div>
                                 <p className="text-[10px] text-[#94A3B8]">Pour 1M tokens (moyenne)</p>
                             </div>
@@ -1154,23 +1169,23 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-[#19211D] to-[#0D181C] border border-[#10B981]/10 p-4 rounded-xl flex items-center justify-between">
+                    <div className="bg-gradient-to-r from-[#121A26] to-[#0D181C] border border-[#3B82F6]/10 p-4 rounded-xl flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-lg bg-[#D97757] flex items-center justify-center">
-                                <span className="text-lg font-black text-white" style={{fontFamily: 'serif'}}>A|</span>
+                            <div className="w-10 h-10 rounded-lg bg-[#0F172A] border border-white/10 flex items-center justify-center">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5"><path d="M12.0003 2.05041C12.4419 6.20811 15.655 9.42125 19.8127 9.86282V14.1379C15.655 14.5794 12.4419 17.7926 12.0003 21.9503H7.99967C7.55809 17.7926 4.34496 14.5794 0.187256 14.1379V9.86282C4.34496 9.42125 7.55809 6.20811 7.99967 2.05041H12.0003Z" fill="url(#gemini_paint0_linear_sm)"/><defs><linearGradient id="gemini_paint0_linear_sm" x1="10" y1="2.05041" x2="10" y2="21.9503" gradientUnits="userSpaceOnUse"><stop stop-color="#1B73E8"/><stop offset="0.5" stop-color="#D93025"/><stop offset="1" stop-color="#F29900"/></linearGradient></defs></svg>
                             </div>
                             <div>
                                 <div className="flex items-center space-x-2 mb-0.5">
-                                    <h3 className="font-bold text-white text-sm leading-tight">Claude 3.5<br/>Sonnet</h3>
-                                    <span className="bg-[#F97316] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">New</span>
+                                    <h3 className="font-bold text-white text-sm leading-tight">Gemini 3.1<br/>Pro</h3>
+                                    <span className="bg-[#3B82F6] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">2026</span>
                                 </div>
                                 <p className="text-[10px] text-[#94A3B8]">Pour 1M tokens (moyenne)</p>
                             </div>
                         </div>
                         <div className="text-right flex flex-col items-end">
-                            <p className="text-[10px] text-[#94A3B8] line-through mb-0.5">Prix officiel = $9.00</p>
+                            <p className="text-[10px] text-[#94A3B8] line-through mb-0.5">Prix officiel = $10.00</p>
                             <div className="flex items-center space-x-1.5">
-                                <span className="font-bold text-lg text-[#60A5FA]">$1.80</span>
+                                <span className="font-bold text-lg text-[#60A5FA]">$2.00</span>
                                 <i className="fas fa-arrow-down text-[#10B981] text-[10px]"></i>
                             </div>
                         </div>

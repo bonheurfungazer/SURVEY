@@ -1,31 +1,43 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 export async function GET(request: Request) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the SSR package. It exchanges an auth code for the user's session.
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-
-  // Also handle implicit flow if the tokens are in the hash fragment.
-  // Actually, Supabase redirect by default uses PKCE when initiated by the server.
-  // But if the client initiates it, the tokens might be in the hash, and the JS client handles it automatically.
-  // We'll redirect to the main page with a query param to show the success message.
+  const { searchParams, origin } = new URL(request.url)
+  const code = searchParams.get('code')
 
   if (code) {
-      // Exchange code for session using the backend client.
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-      const { error } = await supabase.auth.exchangeCodeForSession(code)
-      if (!error) {
-          return NextResponse.redirect(new URL('/?verified=true', request.url))
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore.set(name, value, options)
+              )
+            } catch {
+              // The `setAll` method was called from a Server Component.
+              // This can be ignored if you have middleware refreshing
+              // user sessions.
+            }
+          },
+        },
       }
+    )
+
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (!error) {
+      return NextResponse.redirect(`${origin}/?verified=true`)
+    }
   }
 
-  // Redirect to main page, the client JS will pick up any hash fragments.
-  // We append `?verified=true` anyway, the client script will check if auth is valid.
-  return NextResponse.redirect(new URL('/?verified=true', request.url))
+  // Fallback to home page if code exchange fails or no code is present
+  return NextResponse.redirect(`${origin}/?verified=true`)
 }
