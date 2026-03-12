@@ -318,14 +318,14 @@ export default function Home() {
     const init = async () => {
       // Auto-detect country
       try {
-          const res = await fetch('https://ipwho.is/');
+          const res = await fetch('https://ipapi.co/json/');
           const data = await res.json();
-          if (data && data.country && data.country_code) {
+          if (data && data.country_name && data.country) {
               setVoteForm(prev => ({
                   ...prev,
-                  country: data.country,
-                  countryCode: data.country_code,
-                  contact: countryDialCodes[data.country_code] || ''
+                  country: data.country_name,
+                  countryCode: data.country,
+                  contact: countryDialCodes[data.country] || ''
               }));
           }
       } catch (e) {
@@ -421,19 +421,15 @@ export default function Home() {
     try {
         if (isSignUp) {
             const { data, error } = await supabase.auth.signUp({
-                options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback?next=/?verified=true`,
-                },
                 email: loginEmail,
                 password: loginPassword,
             })
             if (error) throw error
 
-            // Si la vérification par email est activée sur Supabase, l'utilisateur est créé mais pas connecté
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                 showToast("Cet email est déjà utilisé. Veuillez vous connecter.", "error")
             } else {
-                showToast("Inscription réussie ! Vous pouvez maintenant voter.")
+                showToast("Inscription réussie ! Vous êtes maintenant connecté.")
                 setShowLoginModal(false)
             }
         } else {
@@ -1048,7 +1044,7 @@ export default function Home() {
                             <i className="fas fa-terminal text-2xl"></i>
                             <span className="font-bold text-lg tracking-wider">COMPATIBILITÉ CLI</span>
                         </div>
-                        <span className="text-sm font-semibold text-center text-white">Utilisez l'API Unifiée avec :</span>
+                        <span className="text-sm font-semibold text-center text-white">utilsez l'api pour se connecté a :</span>
                         <div className="flex flex-wrap justify-center gap-2 mt-2">
                             <span className="bg-[#10B981]/20 text-[#10B981] px-3 py-1 rounded-md text-sm font-bold border border-[#10B981]/30">Claude Code</span>
                             <span className="bg-[#3B82F6]/20 text-[#3B82F6] px-3 py-1 rounded-md text-sm font-bold border border-[#3B82F6]/30">Gemini CLI</span>
