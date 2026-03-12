@@ -3,9 +3,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
-// Secret key for hashing/signing the cookie (in a real app, use an env variable)
+// Secret key for hashing/signing the cookie
 const ADMIN_COOKIE_NAME = 'admin_session'
-const ADMIN_SECRET_TOKEN = process.env.ADMIN_SECRET_TOKEN || 'secure-admin-token-12345'
+const ADMIN_SECRET_TOKEN = process.env.ADMIN_SECRET_TOKEN
+
+if (!ADMIN_SECRET_TOKEN) {
+  throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+}
 
 export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> {
   let isAuthenticated = false;
