@@ -270,8 +270,8 @@ export default function Home() {
   const [voteForm, setVoteForm] = useState({
     country: 'Cameroun',
     countryCode: 'CM',
-    model: 'Claude Opus 4.6 (et antérieures)',
-    intensity: 8,
+    model: '',
+    intensity: 0,
     useCase: '',
     contact: ''
   })
@@ -283,7 +283,7 @@ export default function Home() {
     generatedPercentage: 0,
     countries: [] as Array<{ name: string; flag: string; count: number; percent: number }>,
     latestVotes: [] as Array<{ user: string; flag: string; model: string; time: string; real: boolean }>,
-    contacts: [] as Array<{ id: string; contact: string; country: string; model: string; useCase: string; date: string }>,
+    contacts: [] as Array<{ id: string; contact: string; country: string; model: string; useCase: string; date: string; intensity: number }>,
     chartData: { realLine: "M0,90 Q40,90 80,90 T150,90 T250,90 T300,90", genLine: "M0,90 Q40,90 80,90 T150,90 T250,90 T300,90" }
   })
 
@@ -291,12 +291,13 @@ export default function Home() {
     if (adminStats.contacts.length === 0) return;
 
     // Create CSV content
-    const headers = ["Date", "Pays", "Modèle Choisi", "Cas d'usage", "Numéro WhatsApp"];
+    const headers = ["Date", "Pays", "Modèle Choisi", "Cas d'usage", "Intensité", "Numéro WhatsApp"];
     const rows = adminStats.contacts.map(c => [
         `"${c.date}"`,
         `"${c.country}"`,
         `"${c.model}"`,
         `"${c.useCase || 'Non renseigné'}"`,
+        `"${c.intensity !== undefined ? c.intensity : 'N/A'}"`,
         `"${c.contact || 'Non renseigné'}"`
     ]);
 
@@ -521,6 +522,16 @@ export default function Home() {
 
     if (!user) {
       showToast("Vous devez être connecté pour voter.", 'error')
+      return
+    }
+
+    if (voteForm.intensity === 0) {
+      showToast("Veuillez sélectionner une intensité supérieure à 0.", 'error')
+      return
+    }
+
+    if (!voteForm.model) {
+      showToast("Veuillez sélectionner un modèle.", 'error')
       return
     }
 
@@ -907,7 +918,7 @@ export default function Home() {
           <button onClick={() => setCurrentTab('vote')} className={`p-2 transition-all duration-200 hover:text-white hover:scale-110 ${currentTab === 'vote' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
               <i className="fas fa-vote-yea text-lg"></i>
           </button>
-          <button onClick={() => setCurrentTab('admin')} className={`p-2 transition-all duration-200 hover:text-white hover:scale-110 ${currentTab === 'admin' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
+          <button onClick={() => { if (!user) { setShowLoginModal(true); showToast("Veuillez vous connecter pour accéder à l'administration.", "error"); } else { setCurrentTab('admin'); } }} className={`p-2 transition-all duration-200 hover:text-white hover:scale-110 ${currentTab === 'admin' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
               <i className="fas fa-chart-line text-lg"></i>
           </button>
       </div>
@@ -1032,9 +1043,17 @@ export default function Home() {
                     <p className="text-sm text-[#94A3B8] leading-relaxed max-w-[280px] mx-auto mb-4">
                         Participez au choix du prochain modèle à intégrer à notre API unifiée à -80%.
                     </p>
-                    <div className="inline-flex items-center justify-center space-x-2 bg-[#1A2332] border border-[#3B82F6]/30 px-4 py-2 rounded-full text-xs font-semibold text-[#E2E8F0] shadow-sm">
-                        <i className="fas fa-terminal text-[#3B82F6]"></i>
-                        <span>Compatible avec Claude Code, Gemini CLI & Codex</span>
+                    <div className="inline-flex flex-col items-center justify-center space-y-2 bg-[#1A2332] border-2 border-[#10B981]/50 px-6 py-4 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.2)] w-full max-w-[320px] mx-auto transform hover:scale-105 transition-all duration-300">
+                        <div className="flex items-center space-x-2 text-[#10B981]">
+                            <i className="fas fa-terminal text-2xl"></i>
+                            <span className="font-bold text-lg tracking-wider">COMPATIBILITÉ CLI</span>
+                        </div>
+                        <span className="text-sm font-semibold text-center text-white">Utilisez l'API Unifiée avec :</span>
+                        <div className="flex flex-wrap justify-center gap-2 mt-2">
+                            <span className="bg-[#10B981]/20 text-[#10B981] px-3 py-1 rounded-md text-sm font-bold border border-[#10B981]/30">Claude Code</span>
+                            <span className="bg-[#3B82F6]/20 text-[#3B82F6] px-3 py-1 rounded-md text-sm font-bold border border-[#3B82F6]/30">Gemini CLI</span>
+                            <span className="bg-[#A855F7]/20 text-[#A855F7] px-3 py-1 rounded-md text-sm font-bold border border-[#A855F7]/30">Codex</span>
+                        </div>
                     </div>
                 </div>
 
@@ -1305,6 +1324,7 @@ export default function Home() {
                             <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Modèle souhaité</label>
                             <div className="relative">
                                 <select value={voteForm.model} onChange={(e) => setVoteForm({...voteForm, model: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none focus:outline-none focus:border-[#3B82F6]/50">
+                                    <option value="" disabled hidden>Veuillez sélectionner un modèle</option>
                                     <option value="Claude Opus 4.6 (et antérieures)">Claude Opus 4.6 (et versions 2026 en descendant)</option>
                                     <option value="GPT-5.4 Thinking (et antérieures)">GPT-5.4 Thinking (et versions 2026 en descendant)</option>
                                     <option value="Gemini 3.1 Pro (et antérieures)">Gemini 3.1 Pro (et versions 2026 en descendant)</option>
@@ -1322,7 +1342,7 @@ export default function Home() {
                             </div>
                             <div className="relative w-full h-2 bg-[#1A2332] rounded-full">
                                 <div className="absolute top-0 left-0 h-full bg-[#10B981] rounded-full" style={{width: `${voteForm.intensity * 10}%`}}></div>
-                                <input type="range" value={voteForm.intensity} onChange={(e) => setVoteForm({...voteForm, intensity: parseInt(e.target.value)})} min="1" max="10" className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                                <input type="range" value={voteForm.intensity} onChange={(e) => setVoteForm({...voteForm, intensity: parseInt(e.target.value)})} min="0" max="10" className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10" />
                                 <div className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white border-2 border-[#10B981] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.8)] pointer-events-none" style={{left: `calc(${voteForm.intensity * 10}% - 10px)`}}></div>
                             </div>
                         </div>
@@ -1368,86 +1388,7 @@ export default function Home() {
                     </form>
                 </div>
 
-                <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-white leading-tight">Comparatif des prix<br/>API</h2>
-                    <div className="bg-[#10B981] text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase leading-tight text-center shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-                        Jusqu'à<br/>-80%
-                    </div>
-                </div>
 
-                <div className="space-y-3 mb-6">
-                    <div className="bg-gradient-to-r from-[#122426] to-[#0D181C] border border-[#10B981]/10 p-4 rounded-xl flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-lg bg-[#0F2823] flex items-center justify-center">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .515 4.911 6.05 6.05 0 0 0 6.515 2.9 6.065 6.065 0 0 0 10.276-2.17 5.99 5.99 0 0 0 3.997-2.9 6.05 6.05 0 0 0-.748-7.097zM12.083 20.443c-1.928 0-3.722-.962-4.821-2.584l6.095-3.518V7.306l2.946 1.7-4.22 11.437zM4.615 15.65c-.964-1.666-1.12-3.712-.42-5.503L10.29 13.67v6.868l-2.946-1.7v-3.188zm1.88-9.452c.965-1.667 2.684-2.73 4.61-2.73v7.037L5.008 7.031l2.946-1.7 1.492 3.19zm11.009.61c.963 1.667 1.12 3.713.42 5.504l-6.096-3.522v-6.87l2.946 1.701v3.187zm-1.88 9.451c-.965 1.667-2.684 2.73-4.61 2.73V11.953l6.097 3.473-2.946 1.701-1.493-3.19zM11.917 3.557c1.928 0 3.722.962 4.821 2.585L10.643 9.66V16.69l-2.946-1.7V3.557zm1.616 9.389-3.056-1.763v-3.526l3.056-1.763 3.056 1.763v3.526l-3.056 1.763z"/></svg>
-                            </div>
-                            <div>
-                                <div className="flex items-center space-x-2 mb-0.5">
-                                    <h3 className="font-bold text-white text-sm leading-tight">GPT-5.4<br/>Thinking</h3>
-                                    <span className="bg-[#10B981] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">2026</span>
-                                </div>
-                                <p className="text-[10px] text-[#94A3B8]">Pour 1M tokens (moyenne)</p>
-                            </div>
-                        </div>
-                        <div className="text-right flex flex-col items-end">
-                            <p className="text-[10px] text-[#94A3B8] line-through mb-0.5">Prix officiel = $20.00</p>
-                            <div className="flex items-center space-x-1.5">
-                                <span className="font-bold text-lg text-[#60A5FA]">$4.00</span>
-                                <i className="fas fa-arrow-down text-[#10B981] text-[10px]"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-[#19211D] to-[#0D181C] border border-[#10B981]/10 p-4 rounded-xl flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-lg bg-[#2D2A26] border border-[#D2996E]/30 flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5"><path d="M14.5 5.5l-9 13H8.5l9-13h-3z" fill="#E2E0D4"/><path d="M5.5 18.5h3L11.5 13H8.5l-3 5.5z" fill="#E2E0D4"/><path d="M19.5 18.5h-3l-3-5.5h3l3 5.5z" fill="#D2996E"/></svg>
-                            </div>
-                            <div>
-                                <div className="flex items-center space-x-2 mb-0.5">
-                                    <h3 className="font-bold text-white text-sm leading-tight">Claude Opus<br/>4.6</h3>
-                                    <span className="bg-[#D2996E] text-[#111823] text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">2026</span>
-                                </div>
-                                <p className="text-[10px] text-[#94A3B8]">Pour 1M tokens (moyenne)</p>
-                            </div>
-                        </div>
-                        <div className="text-right flex flex-col items-end">
-                            <p className="text-[10px] text-[#94A3B8] line-through mb-0.5">Prix officiel = $15.00</p>
-                            <div className="flex items-center space-x-1.5">
-                                <span className="font-bold text-lg text-[#60A5FA]">$3.00</span>
-                                <i className="fas fa-arrow-down text-[#10B981] text-[10px]"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-[#121A26] to-[#0D181C] border border-[#3B82F6]/10 p-4 rounded-xl flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-lg bg-[#0F172A] border border-white/10 flex items-center justify-center">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5"><path d="M12.0003 2.05041C12.4419 6.20811 15.655 9.42125 19.8127 9.86282V14.1379C15.655 14.5794 12.4419 17.7926 12.0003 21.9503H7.99967C7.55809 17.7926 4.34496 14.5794 0.187256 14.1379V9.86282C4.34496 9.42125 7.55809 6.20811 7.99967 2.05041H12.0003Z" fill="url(#gemini_paint0_linear_sm)"/><defs><linearGradient id="gemini_paint0_linear_sm" x1="10" y1="2.05041" x2="10" y2="21.9503" gradientUnits="userSpaceOnUse"><stop stop-color="#1B73E8"/><stop offset="0.5" stop-color="#D93025"/><stop offset="1" stop-color="#F29900"/></linearGradient></defs></svg>
-                            </div>
-                            <div>
-                                <div className="flex items-center space-x-2 mb-0.5">
-                                    <h3 className="font-bold text-white text-sm leading-tight">Gemini 3.1<br/>Pro</h3>
-                                    <span className="bg-[#3B82F6] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">2026</span>
-                                </div>
-                                <p className="text-[10px] text-[#94A3B8]">Pour 1M tokens (moyenne)</p>
-                            </div>
-                        </div>
-                        <div className="text-right flex flex-col items-end">
-                            <p className="text-[10px] text-[#94A3B8] line-through mb-0.5">Prix officiel = $10.00</p>
-                            <div className="flex items-center space-x-1.5">
-                                <span className="font-bold text-lg text-[#60A5FA]">$2.00</span>
-                                <i className="fas fa-arrow-down text-[#10B981] text-[10px]"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-[#0A262E] border border-[#144A55] rounded-xl p-4 text-center">
-                    <p className="text-[11px] text-[#A5F3FC] leading-relaxed">
-                        La facturation sera de tel sorte que pour <span className="font-bold text-white">1 500 XAF</span> on bénéficie de <span className="font-bold text-white">10$</span> d'API pour n'importe quel modèle et pour <span className="font-bold text-white">14 000 XAF</span> on bénéficie de <span className="font-bold text-white">100$</span>.
-                    </p>
-                </div>
 
             </div>
         </div>
@@ -1646,10 +1587,12 @@ export default function Home() {
                             <div key={contact.id || index} className="bg-[#1A2332] rounded-lg p-3 text-[11px] flex justify-between items-center border border-white/5">
                                 <div>
                                     <div className="font-bold text-white mb-0.5">{contact.contact}</div>
-                                    <div className="text-[#94A3B8] flex items-center space-x-2">
-                                        <span>{contact.country}</span>
+                                    <div className="text-[#94A3B8] flex items-center space-x-2 text-[9px] mt-1">
+                                        <span className="truncate max-w-[60px]" title={contact.country}>{contact.country}</span>
                                         <span className="w-1 h-1 rounded-full bg-[#3B82F6]/50"></span>
-                                        <span className="text-[#10B981] truncate max-w-[100px] inline-block">{contact.model}</span>
+                                        <span className="text-[#10B981] truncate max-w-[80px]" title={contact.model}>{contact.model}</span>
+                                        <span className="w-1 h-1 rounded-full bg-[#3B82F6]/50"></span>
+                                        <span className="text-[#F59E0B]">Intensité: {contact.intensity !== undefined ? contact.intensity : '?'}</span>
                                     </div>
                                 </div>
                                 <div className="text-[#64748B] text-[9px] whitespace-nowrap">{contact.date}</div>
