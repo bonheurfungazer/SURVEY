@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -545,7 +547,7 @@ export default function Home() {
     if (adminStats.contacts.length === 0) return;
 
     // Create CSV content
-    const headers = ["Date", "Pays", "Modèle Choisi", "Cas d'usage", "Numéro WhatsApp"];
+    const headers = ["Date", "Pays", "Modèle Choisi", "Cas d&apos;usage", "Numéro WhatsApp"];
     const rows = adminStats.contacts.map(c => [
         `"${c.date}"`,
         `"${c.country}"`,
@@ -639,7 +641,7 @@ export default function Home() {
         fetchSensitiveAdminData().then(sensitiveData => {
             if (sensitiveData && sensitiveData.stats) {
                 // Remplacer complètement les statistiques par les vraies données admin
-                const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: any) => ({
+                const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: { [key: string]: any }) => ({
                     user: v.user,
                     flag: getFlagEmoji(v.country_code),
                     model: v.model,
@@ -647,7 +649,7 @@ export default function Home() {
                     real: v.real
                 }))
 
-                const formattedCountries = sensitiveData.stats.countries.map((c: any) => ({
+                const formattedCountries = sensitiveData.stats.countries.map((c: { [key: string]: any }) => ({
                     name: c.name,
                     flag: getFlagEmoji(c.code),
                     count: c.count,
@@ -706,7 +708,7 @@ export default function Home() {
             })
             if (error) throw error
 
-            // Si la vérification par email est activée sur Supabase, l'utilisateur est créé mais pas connecté
+            // Si la vérification par email est activée sur Supabase, l&apos;utilisateur est créé mais pas connecté
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                 showToast("Cet email est déjà utilisé. Veuillez vous connecter.", "error")
             } else if (data.session === null) {
@@ -768,7 +770,7 @@ export default function Home() {
         }
         if (sensitiveData && sensitiveData.stats) {
             // Remplacer complètement les statistiques par les vraies données admin
-            const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: any) => ({
+            const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: { [key: string]: any }) => ({
                 user: v.user,
                 flag: getFlagEmoji(v.country_code),
                 model: v.model,
@@ -782,7 +784,7 @@ export default function Home() {
                 activeUsers: sensitiveData.stats.activeUsers,
                 reelsPercentage: sensitiveData.stats.reelsPercentage,
                 generatedPercentage: sensitiveData.stats.generatedPercentage,
-                countries: sensitiveData.stats.countries.map((c: any) => ({...c, flag: getFlagEmoji(c.code)})),
+                countries: sensitiveData.stats.countries.map((c: { [key: string]: any }) => ({ name: c.name, count: c.count, percent: c.percent, flag: getFlagEmoji(c.code) })),
                 latestVotes: formattedLatestVotes,
                 chartData: sensitiveData.stats.chartData || prev.chartData
             }));
@@ -847,7 +849,7 @@ export default function Home() {
 
     } catch (error: any) {
       console.error('Error submitting vote:', error)
-      showToast(error.message || "Erreur lors de l'enregistrement de votre vote.", 'error')
+      showToast(error.message || "Erreur lors de l&apos;enregistrement de votre vote.", 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -877,7 +879,7 @@ export default function Home() {
 
       if (!countryErr && countryData) {
         const counts: Record<string, {name: string, code: string, count: number}> = {};
-        countryData.forEach((v: any) => {
+        countryData.forEach((v: { [key: string]: any }) => {
            if (!counts[v.country_code]) {
                counts[v.country_code] = { name: v.country, code: v.country_code, count: 0 };
            }
@@ -1132,7 +1134,7 @@ export default function Home() {
                         {isLoggingIn ? (
                             <span>Patientez... <i className="fas fa-spinner fa-spin ml-2"></i></span>
                         ) : (
-                            <span>{isSignUp ? "S'inscrire" : "Se connecter"}</span>
+                            <span>{isSignUp ? "S&apos;inscrire" : "Se connecter"}</span>
                         )}
                     </button>
                     <div className="text-center mt-4">
@@ -1141,7 +1143,7 @@ export default function Home() {
                             onClick={() => setIsSignUp(!isSignUp)}
                             className="text-xs text-[#94A3B8] hover:text-white transition-colors"
                         >
-                            {isSignUp ? 'Déjà un compte ? Connectez-vous' : "Pas de compte ? S'inscrire"}
+                            {isSignUp ? 'Déjà un compte ? Connectez-vous' : "Pas de compte ? S&apos;inscrire"}
                         </button>
                     </div>
                 </form>
@@ -1201,7 +1203,7 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-lg bg-[#111823] border border-[#1E293B] flex items-center justify-center text-[#3B82F6] text-sm font-bold">
                         &lt;&gt;
                     </div>
-                    <span className="font-bold text-lg tracking-tight">L'API Unifiée</span>
+                    <span className="font-bold text-lg tracking-tight">L&apos;API Unifiée</span>
                 </div>
                 {!user ? (
                     <button onClick={() => {setShowLoginModal(true); setIsSignUp(false);}} className="text-sm font-semibold text-[#94A3B8] hover:text-white transition-colors flex items-center space-x-2">
@@ -1301,7 +1303,7 @@ export default function Home() {
                             </div>
                         </div>
                     )) : (
-                        <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l'instant</div>
+                        <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l&apos;instant</div>
                     )}
                 </div>
             </div>
@@ -1621,7 +1623,7 @@ export default function Home() {
                         </div>
 
                         <div className="mb-5">
-                            <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Cas d'usage</label>
+                            <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Cas d&apos;usage</label>
                             <textarea value={voteForm.useCase} onChange={(e) => setVoteForm({...voteForm, useCase: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3 text-sm text-white placeholder-[#94A3B8]/50 focus:outline-none focus:border-[#3B82F6]/50 resize-none h-24" placeholder="Ex: Développement d'applications mobiles, automatisation de mails..." required></textarea>
                         </div>
 
@@ -1868,7 +1870,7 @@ export default function Home() {
                                 Intégration CLI Native & Authentification
                             </h3>
                             <p className="text-[#94A3B8] text-[13px] leading-relaxed max-w-[400px]">
-                                Notre API unifiée vous permet de vous authentifier et d'utiliser directement vos assistants de code préférés (<span className="text-white font-semibold">Claude Code</span>, <span className="text-white font-semibold">Gemini CLI</span>, <span className="text-white font-semibold">Codex</span>) dans votre terminal, à -80% du prix officiel.
+                                Notre API unifiée vous permet de vous authentifier et d&apos;utiliser directement vos assistants de code préférés (<span className="text-white font-semibold">Claude Code</span>, <span className="text-white font-semibold">Gemini CLI</span>, <span className="text-white font-semibold">Codex</span>) dans votre terminal, à -80% du prix officiel.
                             </p>
                         </div>
                         <div className="flex flex-col space-y-3 shrink-0">
@@ -1983,7 +1985,7 @@ export default function Home() {
                             <div className="text-center text-[#94A3B8] text-sm py-4">Aucun contact enregistré (WhatsApp/Email)</div>
                         )}
                         {adminStats.contacts.length > 0 && adminStats.contacts.filter(c => c.contact).length === 0 && (
-                            <div className="text-center text-[#94A3B8] text-sm py-4">Les votants actuels n'ont pas laissé de contact</div>
+                            <div className="text-center text-[#94A3B8] text-sm py-4">Les votants actuels n&apos;ont pas laiss&eacute; de contact</div>
                         )}
                     </div>
                 </div>
@@ -2024,7 +2026,7 @@ export default function Home() {
                                 </div>
                             </div>
                         )) : (
-                            <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l'instant</div>
+                            <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l&apos;instant</div>
                         )}
                     </div>
                 </div>

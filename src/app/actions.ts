@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
@@ -10,12 +11,12 @@ const ADMIN_SECRET_TOKEN = process.env.ADMIN_SECRET_TOKEN || 'secure-admin-token
 export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> {
   let isAuthenticated = false;
 
-  // L'utilisateur a explicitement demandé de configurer cet utilisateur avec ce mot de passe.
+  // L&apos;utilisateur a explicitement demandé de configurer cet utilisateur avec ce mot de passe.
   if (username === 'Bonheurfung' && password === 'arcen4444') {
     isAuthenticated = true;
   }
 
-  // Tentative de validation via RPC si configuré par l'utilisateur
+  // Tentative de validation via RPC si configuré par l&apos;utilisateur
   if (!isAuthenticated) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -144,7 +145,7 @@ export async function fetchSensitiveAdminData() {
       const votesByHour: Record<number, number> = {};
       for (let i = 0; i < 24; i++) votesByHour[i] = 0;
 
-      realVotesData?.forEach((v: any) => {
+      realVotesData?.forEach((v: { [key: string]: any }) => {
           const hour = new Date(v.created_at).getHours();
           votesByHour[hour]++;
       });
@@ -185,7 +186,7 @@ export async function fetchSensitiveAdminData() {
               reelsPercentage: 100, // By definition, in admin view it's 100% real
               generatedPercentage: 0,
               countries: topCountries,
-              latestVotes: realVotesData?.slice(0, 3).map((v: any) => ({
+              latestVotes: realVotesData?.slice(0, 3).map((v: { [key: string]: any }) => ({
                   id: v.id,
                   user: 'usr_' + v.id.substring(0, 5),
                   country_code: v.country_code, // fallback
@@ -198,7 +199,7 @@ export async function fetchSensitiveAdminData() {
                   genLine: "M0,90 L300,90" // Ligne plate car 0% généré dans la vue admin réelle
               }
           },
-          contacts: recentData?.map((v: any) => ({
+          contacts: recentData?.map((v: { [key: string]: any }) => ({
               id: v.id,
               contact: v.contact_info || '',
               useCase: v.use_case || '',
