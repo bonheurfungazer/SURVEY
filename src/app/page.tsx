@@ -578,9 +578,7 @@ export default function Home() {
               // Primary reliable detection via GeoJS
               const res = await fetch('https://get.geojs.io/v1/ip/country.json');
               const data = await res.json();
-              if (data && data.country) {
-                  detectedCode = data.country;
-              } else {
+              if (data && data.country) { detectedCode = data.country.toUpperCase(); } else {
                   throw new Error('geojs failed');
               }
           } catch (e) {
@@ -588,18 +586,14 @@ export default function Home() {
                   // Fallback 1 to ipapi.co
                   const res = await fetch('https://ipapi.co/json/');
                   const data = await res.json();
-                  if (data && data.country) {
-                      detectedCode = data.country;
-                  } else {
+                  if (data && data.country) { detectedCode = data.country.toUpperCase(); } else {
                       throw new Error('ipapi.co failed');
                   }
               } catch (e2) {
                   // Fallback 2 to ipinfo.io
                   const res = await fetch('https://ipinfo.io/json');
                   const data = await res.json();
-                  if (data && data.country) {
-                      detectedCode = data.country;
-                  }
+                  if (data && data.country) { detectedCode = data.country.toUpperCase(); }
               }
           }
 
@@ -845,12 +839,7 @@ export default function Home() {
       setTimeout(() => {
         setVoteSuccess(false)
         setCurrentTab('home')
-        setVoteForm(prev => ({
-          ...prev,
-          intensity: 8,
-          useCase: '',
-          contact: ''
-        }))
+        setVoteForm(prev => ({ ...prev, intensity: 8, useCase: '', contact: countryDialCodes[prev.countryCode] || '' }))
         fetchAdminStats()
       }, 2000)
 
