@@ -273,7 +273,7 @@ export default function Home() {
     model: '',
     intensity: 0,
     useCase: '',
-    contact: '+237'
+    contact: ''
   })
 
   const [adminStats, setAdminStats] = useState({
@@ -603,7 +603,7 @@ export default function Home() {
                   ...prev,
                   country: localizedName,
                   countryCode: detectedCode,
-                  contact: countryDialCodes[detectedCode] || ''
+                  contact: ''
               }));
           }
       } catch (e) {
@@ -810,8 +810,10 @@ export default function Home() {
       return
     }
 
+    const dialCode = countryDialCodes[voteForm.countryCode] || '';
+    const fullContact = dialCode + voteForm.contact;
     const phoneRegex = /^\+?[0-9\s\-\.()]{7,25}$/;
-    if (!voteForm.contact || !phoneRegex.test(voteForm.contact)) {
+    if (!voteForm.contact || !phoneRegex.test(fullContact)) {
       showToast("Veuillez renseigner un numéro de téléphone valide (ex: +33612345678).", 'error')
       return
     }
@@ -828,7 +830,7 @@ export default function Home() {
             model_choice: voteForm.model,
             intensity: voteForm.intensity,
             use_case: voteForm.useCase,
-            contact_info: voteForm.contact,
+            contact_info: fullContact,
             is_real_user: true
           }
         ])
@@ -846,7 +848,7 @@ export default function Home() {
       setTimeout(() => {
         setVoteSuccess(false)
         setCurrentTab('home')
-        setVoteForm(prev => ({ ...prev, intensity: 8, useCase: '', contact: countryDialCodes[prev.countryCode] || '' }))
+        setVoteForm(prev => ({ ...prev, intensity: 8, useCase: '', contact: '' }))
         fetchAdminStats()
       }, 2000)
 
@@ -1075,8 +1077,8 @@ export default function Home() {
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const code = e.target.value;
     const name = e.target.options[e.target.selectedIndex].dataset.name || '';
-    const dialCode = countryDialCodes[code] || '';
-    setVoteForm(prev => ({ ...prev, country: name, countryCode: code, contact: dialCode }))
+
+    setVoteForm(prev => ({ ...prev, country: name, countryCode: code, contact: '' }))
   }
 
   return (
@@ -1628,11 +1630,12 @@ export default function Home() {
 
                         <div className="mb-6">
                             <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Me prévenir du lancement</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <i className="fab fa-whatsapp text-[#10B981]/70 text-sm"></i>
+                            <div className="flex bg-[#1A2332] border border-white/5 rounded-xl overflow-hidden focus-within:border-[#3B82F6]/50 transition-colors relative">
+                                <div className="pl-4 pr-3 py-3 flex items-center bg-[#1E293B] border-r border-white/5">
+                                    <i className="fab fa-whatsapp text-[#10B981]/70 text-sm mr-2"></i>
+                                    <span className="text-white text-sm font-semibold">{countryDialCodes[voteForm.countryCode] || ''}</span>
                                 </div>
-                                <input type="text" value={voteForm.contact} onChange={(e) => setVoteForm({...voteForm, contact: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-[#94A3B8]/50 focus:outline-none focus:border-[#3B82F6]/50" placeholder="n° WhatsApp (ex: +237...)" pattern="^\+?[0-9\s\-\.()]{7,25}$" title="Veuillez entrer un numéro valide (ex: +33612345678)" required />
+                                <input type="tel" value={voteForm.contact} onChange={(e) => setVoteForm({...voteForm, contact: e.target.value})} className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder-[#94A3B8]/50 focus:outline-none w-full" placeholder="Numéro local" pattern="^[0-9\\s\\-\\.()]{5,20}$" title="Veuillez entrer le numéro local sans le code pays" required />
                             </div>
                         </div>
 
