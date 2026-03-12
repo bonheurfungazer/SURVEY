@@ -431,10 +431,6 @@ export default function Home() {
             // Si la vérification par email est activée sur Supabase, l'utilisateur est créé mais pas connecté
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                 showToast("Cet email est déjà utilisé. Veuillez vous connecter.", "error")
-            } else if (data.session === null) {
-                // showToast("Inscription réussie ! Veuillez vérifier votre boîte mail pour confirmer votre compte.")
-                setShowVerificationPopup(true)
-                setShowLoginModal(false)
             } else {
                 showToast("Inscription réussie ! Vous pouvez maintenant voter.")
                 setShowLoginModal(false)
@@ -808,9 +804,20 @@ export default function Home() {
                 >
                     <i className="fas fa-times text-xl"></i>
                 </button>
-                <h2 className="text-2xl font-bold text-white mb-2 text-center">
-                    {isSignUp ? 'Créer un compte' : 'Connexion'}
-                </h2>
+                <div className="flex justify-center space-x-6 mb-6 border-b border-[#1E293B] pb-2">
+                    <button
+                        onClick={() => setIsSignUp(false)}
+                        className={`text-lg font-bold transition-colors pb-2 border-b-2 -mb-[9px] ${!isSignUp ? 'text-white border-[#3B82F6]' : 'text-[#94A3B8] border-transparent hover:text-white hover:border-[#94A3B8]'}`}
+                    >
+                        Connexion
+                    </button>
+                    <button
+                        onClick={() => setIsSignUp(true)}
+                        className={`text-lg font-bold transition-colors pb-2 border-b-2 -mb-[9px] ${isSignUp ? 'text-white border-[#3B82F6]' : 'text-[#94A3B8] border-transparent hover:text-white hover:border-[#94A3B8]'}`}
+                    >
+                        Inscription
+                    </button>
+                </div>
                 <p className="text-[#94A3B8] text-sm text-center mb-6">
                     {isSignUp ? 'Inscrivez-vous pour voter et participer au choix du prochain modèle.' : 'Connectez-vous pour continuer.'}
                 </p>
@@ -857,15 +864,7 @@ export default function Home() {
                             <span>{isSignUp ? "S'inscrire" : "Se connecter"}</span>
                         )}
                     </button>
-                    <div className="text-center mt-4">
-                        <button
-                            type="button"
-                            onClick={() => setIsSignUp(!isSignUp)}
-                            className="text-xs text-[#94A3B8] hover:text-white transition-colors"
-                        >
-                            {isSignUp ? 'Déjà un compte ? Connectez-vous' : "Pas de compte ? S'inscrire"}
-                        </button>
-                    </div>
+
                 </form>
             </div>
         </div>
@@ -902,13 +901,13 @@ export default function Home() {
 
       {/* Tab Navigation */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex space-x-2 bg-[#111823]/90 backdrop-blur-md px-6 py-3 rounded-full border border-[#1E293B] shadow-lg">
-          <button onClick={() => setCurrentTab('home')} className={`p-2 transition-colors duration-200 ${currentTab === 'home' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
+          <button onClick={() => setCurrentTab('home')} className={`p-2 transition-all duration-200 hover:text-white hover:scale-110 ${currentTab === 'home' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
               <i className="fas fa-home text-lg"></i>
           </button>
-          <button onClick={() => setCurrentTab('vote')} className={`p-2 transition-colors duration-200 ${currentTab === 'vote' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
+          <button onClick={() => setCurrentTab('vote')} className={`p-2 transition-all duration-200 hover:text-white hover:scale-110 ${currentTab === 'vote' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
               <i className="fas fa-vote-yea text-lg"></i>
           </button>
-          <button onClick={() => setCurrentTab('admin')} className={`p-2 transition-colors duration-200 ${currentTab === 'admin' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
+          <button onClick={() => setCurrentTab('admin')} className={`p-2 transition-all duration-200 hover:text-white hover:scale-110 ${currentTab === 'admin' ? 'text-[#3B82F6]' : 'text-[#94A3B8]'}`}>
               <i className="fas fa-chart-line text-lg"></i>
           </button>
       </div>
