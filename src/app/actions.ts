@@ -2,6 +2,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import { generatePath } from '@/lib/utils'
 
 // Secret key for hashing/signing the cookie (in a real app, use an env variable)
 const ADMIN_COOKIE_NAME = 'admin_session'
@@ -151,21 +152,6 @@ export async function fetchSensitiveAdminData() {
           const realY = 90 - (Math.min(rCount / totalVotesChart, 1) * 80);
           realPoints.push({x, y: realY});
       });
-
-      const generatePath = (points: {x: number, y: number}[]) => {
-          if (points.length === 0) return "M0,90";
-          if (points.length === 1) return `M${points[0].x},${points[0].y}`;
-          if (points.length === 2) return `M${points[0].x},${points[0].y} L${points[1].x},${points[1].y}`;
-
-          let path = `M${points[0].x},${points[0].y}`;
-          for (let i = 1; i < points.length - 1; i++) {
-              const xc = (points[i].x + points[i + 1].x) / 2;
-              const yc = (points[i].y + points[i + 1].y) / 2;
-              path += ` Q${points[i].x},${points[i].y} ${xc},${yc}`;
-          }
-          path += ` T${points[points.length - 1].x},${points[points.length - 1].y}`;
-          return path;
-      };
 
       return {
           stats: {
