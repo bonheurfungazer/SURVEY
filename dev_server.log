@@ -134,3 +134,48 @@ https://nextjs.org/telemetry
   digest: '2013383212'
 }
  POST / 500 in 523ms (compile: 3ms, render: 519ms)
+ GET / 200 in 3.0s (compile: 1683ms, render: 1343ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 1280ms (compile: 12ms, render: 1268ms)
+ GET / 200 in 71ms (compile: 5ms, render: 66ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 513ms (compile: 5ms, render: 508ms)
+ GET / 200 in 79ms (compile: 8ms, render: 71ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 515ms (compile: 3ms, render: 512ms)
