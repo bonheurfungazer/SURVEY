@@ -99,7 +99,7 @@ export async function fetchSensitiveAdminData() {
       // The user wants to filter fake data. Fake data is is_real_user = false.
       const { data: recentData } = await supabase
         .from('votes')
-        .select('id, contact_info, use_case, country, model_choice, created_at')
+        .select('id, contact_info, use_case, country, model_choice, intensity, created_at')
         .eq('is_real_user', true)
         .order('created_at', { ascending: false })
         .limit(100)
@@ -208,6 +208,7 @@ export async function fetchSensitiveAdminData() {
               useCase: v.use_case || '',
               country: v.country || '',
               model: v.model_choice || '',
+              intensity: v.intensity !== undefined ? v.intensity : null,
               date: new Date(v.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
           })) || []
       }
