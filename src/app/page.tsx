@@ -273,7 +273,7 @@ export default function Home() {
     model: '',
     intensity: 0,
     useCase: '',
-    contact: ''
+    contact: '+237'
   })
 
   const [adminStats, setAdminStats] = useState({
@@ -575,19 +575,31 @@ export default function Home() {
           let detectedCode = '';
 
           try {
-              const res = await fetch('https://ipapi.co/json/');
+              // Primary reliable detection via GeoJS
+              const res = await fetch('https://get.geojs.io/v1/ip/country.json');
               const data = await res.json();
               if (data && data.country) {
                   detectedCode = data.country;
-              } else if (data && data.error) {
-                  throw new Error('ipapi.co rate limit or error');
+              } else {
+                  throw new Error('geojs failed');
               }
           } catch (e) {
-              // Fallback to ipinfo.io
-              const res = await fetch('https://ipinfo.io/json');
-              const data = await res.json();
-              if (data && data.country) {
-                  detectedCode = data.country;
+              try {
+                  // Fallback 1 to ipapi.co
+                  const res = await fetch('https://ipapi.co/json/');
+                  const data = await res.json();
+                  if (data && data.country) {
+                      detectedCode = data.country;
+                  } else {
+                      throw new Error('ipapi.co failed');
+                  }
+              } catch (e2) {
+                  // Fallback 2 to ipinfo.io
+                  const res = await fetch('https://ipinfo.io/json');
+                  const data = await res.json();
+                  if (data && data.country) {
+                      detectedCode = data.country;
+                  }
               }
           }
 
@@ -1065,9 +1077,10 @@ export default function Home() {
   }
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.options[e.target.selectedIndex].dataset.code || ''
+    const code = e.target.value;
+    const name = e.target.options[e.target.selectedIndex].dataset.name || '';
     const dialCode = countryDialCodes[code] || '';
-    setVoteForm(prev => ({ ...prev, country: e.target.value, countryCode: code, contact: dialCode }))
+    setVoteForm(prev => ({ ...prev, country: name, countryCode: code, contact: dialCode }))
   }
 
   return (
@@ -1316,7 +1329,7 @@ export default function Home() {
                             <i className="fas fa-terminal text-2xl"></i>
                             <span className="font-bold text-lg tracking-wider">COMPATIBILITÉ CLI</span>
                         </div>
-                        <span className="text-sm font-semibold text-center text-white">utilsez l'api pour se connecté a :</span>
+                        <span className="text-sm font-semibold text-center text-white">posibilité de se connecter...... en plus de l'integration dans les projet</span>
                         <div className="flex flex-wrap justify-center gap-2 mt-2">
                             <span className="bg-[#10B981]/20 text-[#10B981] px-3 py-1 rounded-md text-sm font-bold border border-[#10B981]/30">Claude Code</span>
                             <span className="bg-[#3B82F6]/20 text-[#3B82F6] px-3 py-1 rounded-md text-sm font-bold border border-[#3B82F6]/30">Gemini CLI</span>
@@ -1330,257 +1343,257 @@ export default function Home() {
                         <div className="mb-5">
                             <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Pays de résidence</label>
                             <div className="relative">
-                                <select value={voteForm.country} onChange={handleCountryChange} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none focus:outline-none focus:border-[#3B82F6]/50">
-                                    <option data-code="AF" value="Afghanistan">🇦🇫 Afghanistan</option>
-<option data-code="ZA" value="Afrique du Sud">🇿🇦 Afrique du Sud</option>
-<option data-code="AX" value="Ahvenanmaa">🇦🇽 Ahvenanmaa</option>
-<option data-code="AL" value="Albanie">🇦🇱 Albanie</option>
-<option data-code="DZ" value="Algérie">🇩🇿 Algérie</option>
-<option data-code="DE" value="Allemagne">🇩🇪 Allemagne</option>
-<option data-code="AD" value="Andorre">🇦🇩 Andorre</option>
-<option data-code="AO" value="Angola">🇦🇴 Angola</option>
-<option data-code="AI" value="Anguilla">🇦🇮 Anguilla</option>
-<option data-code="AQ" value="Antarctique">🇦🇶 Antarctique</option>
-<option data-code="AG" value="Antigua-et-Barbuda">🇦🇬 Antigua-et-Barbuda</option>
-<option data-code="SA" value="Arabie Saoudite">🇸🇦 Arabie Saoudite</option>
-<option data-code="AR" value="Argentine">🇦🇷 Argentine</option>
-<option data-code="AM" value="Arménie">🇦🇲 Arménie</option>
-<option data-code="AW" value="Aruba">🇦🇼 Aruba</option>
-<option data-code="AU" value="Australie">🇦🇺 Australie</option>
-<option data-code="AT" value="Autriche">🇦🇹 Autriche</option>
-<option data-code="AZ" value="Azerbaïdjan">🇦🇿 Azerbaïdjan</option>
-<option data-code="BS" value="Bahamas">🇧🇸 Bahamas</option>
-<option data-code="BH" value="Bahreïn">🇧🇭 Bahreïn</option>
-<option data-code="BD" value="Bangladesh">🇧🇩 Bangladesh</option>
-<option data-code="BB" value="Barbade">🇧🇧 Barbade</option>
-<option data-code="BE" value="Belgique">🇧🇪 Belgique</option>
-<option data-code="BZ" value="Belize">🇧🇿 Belize</option>
-<option data-code="BJ" value="Bénin">🇧🇯 Bénin</option>
-<option data-code="BM" value="Bermudes">🇧🇲 Bermudes</option>
-<option data-code="BT" value="Bhoutan">🇧🇹 Bhoutan</option>
-<option data-code="BY" value="Biélorussie">🇧🇾 Biélorussie</option>
-<option data-code="MM" value="Birmanie">🇲🇲 Birmanie</option>
-<option data-code="BO" value="Bolivie">🇧🇴 Bolivie</option>
-<option data-code="BA" value="Bosnie-Herzégovine">🇧🇦 Bosnie-Herzégovine</option>
-<option data-code="BW" value="Botswana">🇧🇼 Botswana</option>
-<option data-code="BR" value="Brésil">🇧🇷 Brésil</option>
-<option data-code="BN" value="Brunei">🇧🇳 Brunei</option>
-<option data-code="BG" value="Bulgarie">🇧🇬 Bulgarie</option>
-<option data-code="BF" value="Burkina Faso">🇧🇫 Burkina Faso</option>
-<option data-code="BI" value="Burundi">🇧🇮 Burundi</option>
-<option data-code="KH" value="Cambodge">🇰🇭 Cambodge</option>
-<option data-code="CM" value="Cameroun">🇨🇲 Cameroun</option>
-<option data-code="CA" value="Canada">🇨🇦 Canada</option>
-<option data-code="CL" value="Chili">🇨🇱 Chili</option>
-<option data-code="CN" value="Chine">🇨🇳 Chine</option>
-<option data-code="CY" value="Chypre">🇨🇾 Chypre</option>
-<option data-code="VA" value="Cité du Vatican">🇻🇦 Cité du Vatican</option>
-<option data-code="CO" value="Colombie">🇨🇴 Colombie</option>
-<option data-code="KM" value="Comores">🇰🇲 Comores</option>
-<option data-code="CG" value="Congo">🇨🇬 Congo</option>
-<option data-code="CD" value="Congo (Rép. dém.)">🇨🇩 Congo (Rép. dém.)</option>
-<option data-code="KP" value="Corée du Nord">🇰🇵 Corée du Nord</option>
-<option data-code="KR" value="Corée du Sud">🇰🇷 Corée du Sud</option>
-<option data-code="CR" value="Costa Rica">🇨🇷 Costa Rica</option>
-<option data-code="CI" value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
-<option data-code="HR" value="Croatie">🇭🇷 Croatie</option>
-<option data-code="CU" value="Cuba">🇨🇺 Cuba</option>
-<option data-code="CW" value="Curaçao">🇨🇼 Curaçao</option>
-<option data-code="DK" value="Danemark">🇩🇰 Danemark</option>
-<option data-code="DJ" value="Djibouti">🇩🇯 Djibouti</option>
-<option data-code="DM" value="Dominique">🇩🇲 Dominique</option>
-<option data-code="EG" value="Égypte">🇪🇬 Égypte</option>
-<option data-code="AE" value="Émirats arabes unis">🇦🇪 Émirats arabes unis</option>
-<option data-code="EC" value="Équateur">🇪🇨 Équateur</option>
-<option data-code="ER" value="Érythrée">🇪🇷 Érythrée</option>
-<option data-code="ES" value="Espagne">🇪🇸 Espagne</option>
-<option data-code="EE" value="Estonie">🇪🇪 Estonie</option>
-<option data-code="US" value="États-Unis">🇺🇸 États-Unis</option>
-<option data-code="ET" value="Éthiopie">🇪🇹 Éthiopie</option>
-<option data-code="FJ" value="Fidji">🇫🇯 Fidji</option>
-<option data-code="FI" value="Finlande">🇫🇮 Finlande</option>
-<option data-code="FR" value="France">🇫🇷 France</option>
-<option data-code="GA" value="Gabon">🇬🇦 Gabon</option>
-<option data-code="GM" value="Gambie">🇬🇲 Gambie</option>
-<option data-code="GE" value="Géorgie">🇬🇪 Géorgie</option>
-<option data-code="GS" value="Géorgie du Sud-et-les Îles Sandwich du Sud">🇬🇸 Géorgie du Sud-et-les Îles Sandwich du Sud</option>
-<option data-code="GH" value="Ghana">🇬🇭 Ghana</option>
-<option data-code="GI" value="Gibraltar">🇬🇮 Gibraltar</option>
-<option data-code="GR" value="Grèce">🇬🇷 Grèce</option>
-<option data-code="GD" value="Grenade">🇬🇩 Grenade</option>
-<option data-code="GL" value="Groenland">🇬🇱 Groenland</option>
-<option data-code="GP" value="Guadeloupe">🇬🇵 Guadeloupe</option>
-<option data-code="GU" value="Guam">🇬🇺 Guam</option>
-<option data-code="GT" value="Guatemala">🇬🇹 Guatemala</option>
-<option data-code="GG" value="Guernesey">🇬🇬 Guernesey</option>
-<option data-code="GN" value="Guinée">🇬🇳 Guinée</option>
-<option data-code="GQ" value="Guinée équatoriale">🇬🇶 Guinée équatoriale</option>
-<option data-code="GW" value="Guinée-Bissau">🇬🇼 Guinée-Bissau</option>
-<option data-code="GY" value="Guyana">🇬🇾 Guyana</option>
-<option data-code="GF" value="Guyane">🇬🇫 Guyane</option>
-<option data-code="HT" value="Haïti">🇭🇹 Haïti</option>
-<option data-code="HN" value="Honduras">🇭🇳 Honduras</option>
-<option data-code="HK" value="Hong Kong">🇭🇰 Hong Kong</option>
-<option data-code="HU" value="Hongrie">🇭🇺 Hongrie</option>
-<option data-code="BV" value="Île Bouvet">🇧🇻 Île Bouvet</option>
-<option data-code="CX" value="Île Christmas">🇨🇽 Île Christmas</option>
-<option data-code="IM" value="Île de Man">🇮🇲 Île de Man</option>
-<option data-code="MU" value="Île Maurice">🇲🇺 Île Maurice</option>
-<option data-code="NF" value="Île Norfolk">🇳🇫 Île Norfolk</option>
-<option data-code="KY" value="Îles Caïmans">🇰🇾 Îles Caïmans</option>
-<option data-code="CC" value="Îles Cocos">🇨🇨 Îles Cocos</option>
-<option data-code="CK" value="Îles Cook">🇨🇰 Îles Cook</option>
-<option data-code="CV" value="Îles du Cap-Vert">🇨🇻 Îles du Cap-Vert</option>
-<option data-code="FO" value="Îles Féroé">🇫🇴 Îles Féroé</option>
-<option data-code="HM" value="Îles Heard-et-MacDonald">🇭🇲 Îles Heard-et-MacDonald</option>
-<option data-code="FK" value="Îles Malouines">🇫🇰 Îles Malouines</option>
-<option data-code="MP" value="Îles Mariannes du Nord">🇲🇵 Îles Mariannes du Nord</option>
-<option data-code="MH" value="Îles Marshall">🇲🇭 Îles Marshall</option>
-<option data-code="UM" value="Îles mineures éloignées des États-Unis">🇺🇲 Îles mineures éloignées des États-Unis</option>
-<option data-code="PN" value="Îles Pitcairn">🇵🇳 Îles Pitcairn</option>
-<option data-code="SB" value="Îles Salomon">🇸🇧 Îles Salomon</option>
-<option data-code="TC" value="Îles Turques-et-Caïques">🇹🇨 Îles Turques-et-Caïques</option>
-<option data-code="VG" value="Îles Vierges britanniques">🇻🇬 Îles Vierges britanniques</option>
-<option data-code="VI" value="Îles Vierges des États-Unis">🇻🇮 Îles Vierges des États-Unis</option>
-<option data-code="IN" value="Inde">🇮🇳 Inde</option>
-<option data-code="ID" value="Indonésie">🇮🇩 Indonésie</option>
-<option data-code="IQ" value="Irak">🇮🇶 Irak</option>
-<option data-code="IR" value="Iran">🇮🇷 Iran</option>
-<option data-code="IE" value="Irlande">🇮🇪 Irlande</option>
-<option data-code="IS" value="Islande">🇮🇸 Islande</option>
-<option data-code="IL" value="Israël">🇮🇱 Israël</option>
-<option data-code="IT" value="Italie">🇮🇹 Italie</option>
-<option data-code="JM" value="Jamaïque">🇯🇲 Jamaïque</option>
-<option data-code="JP" value="Japon">🇯🇵 Japon</option>
-<option data-code="JE" value="Jersey">🇯🇪 Jersey</option>
-<option data-code="JO" value="Jordanie">🇯🇴 Jordanie</option>
-<option data-code="KZ" value="Kazakhstan">🇰🇿 Kazakhstan</option>
-<option data-code="KE" value="Kenya">🇰🇪 Kenya</option>
-<option data-code="KG" value="Kirghizistan">🇰🇬 Kirghizistan</option>
-<option data-code="KI" value="Kiribati">🇰🇮 Kiribati</option>
-<option data-code="XK" value="Kosovo">🇽🇰 Kosovo</option>
-<option data-code="KW" value="Koweït">🇰🇼 Koweït</option>
-<option data-code="LA" value="Laos">🇱🇦 Laos</option>
-<option data-code="LS" value="Lesotho">🇱🇸 Lesotho</option>
-<option data-code="LV" value="Lettonie">🇱🇻 Lettonie</option>
-<option data-code="LB" value="Liban">🇱🇧 Liban</option>
-<option data-code="LR" value="Liberia">🇱🇷 Liberia</option>
-<option data-code="LY" value="Libye">🇱🇾 Libye</option>
-<option data-code="LI" value="Liechtenstein">🇱🇮 Liechtenstein</option>
-<option data-code="LT" value="Lituanie">🇱🇹 Lituanie</option>
-<option data-code="LU" value="Luxembourg">🇱🇺 Luxembourg</option>
-<option data-code="MO" value="Macao">🇲🇴 Macao</option>
-<option data-code="MK" value="Macédoine du Nord">🇲🇰 Macédoine du Nord</option>
-<option data-code="MG" value="Madagascar">🇲🇬 Madagascar</option>
-<option data-code="MY" value="Malaisie">🇲🇾 Malaisie</option>
-<option data-code="MW" value="Malawi">🇲🇼 Malawi</option>
-<option data-code="MV" value="Maldives">🇲🇻 Maldives</option>
-<option data-code="ML" value="Mali">🇲🇱 Mali</option>
-<option data-code="MT" value="Malte">🇲🇹 Malte</option>
-<option data-code="MA" value="Maroc">🇲🇦 Maroc</option>
-<option data-code="MQ" value="Martinique">🇲🇶 Martinique</option>
-<option data-code="MR" value="Mauritanie">🇲🇷 Mauritanie</option>
-<option data-code="YT" value="Mayotte">🇾🇹 Mayotte</option>
-<option data-code="MX" value="Mexique">🇲🇽 Mexique</option>
-<option data-code="FM" value="Micronésie">🇫🇲 Micronésie</option>
-<option data-code="MD" value="Moldavie">🇲🇩 Moldavie</option>
-<option data-code="MC" value="Monaco">🇲🇨 Monaco</option>
-<option data-code="MN" value="Mongolie">🇲🇳 Mongolie</option>
-<option data-code="ME" value="Monténégro">🇲🇪 Monténégro</option>
-<option data-code="MS" value="Montserrat">🇲🇸 Montserrat</option>
-<option data-code="MZ" value="Mozambique">🇲🇿 Mozambique</option>
-<option data-code="NA" value="Namibie">🇳🇦 Namibie</option>
-<option data-code="NR" value="Nauru">🇳🇷 Nauru</option>
-<option data-code="NP" value="Népal">🇳🇵 Népal</option>
-<option data-code="NI" value="Nicaragua">🇳🇮 Nicaragua</option>
-<option data-code="NE" value="Niger">🇳🇪 Niger</option>
-<option data-code="NG" value="Nigéria">🇳🇬 Nigéria</option>
-<option data-code="NU" value="Niue">🇳🇺 Niue</option>
-<option data-code="NO" value="Norvège">🇳🇴 Norvège</option>
-<option data-code="NC" value="Nouvelle-Calédonie">🇳🇨 Nouvelle-Calédonie</option>
-<option data-code="NZ" value="Nouvelle-Zélande">🇳🇿 Nouvelle-Zélande</option>
-<option data-code="OM" value="Oman">🇴🇲 Oman</option>
-<option data-code="UG" value="Ouganda">🇺🇬 Ouganda</option>
-<option data-code="UZ" value="Ouzbékistan">🇺🇿 Ouzbékistan</option>
-<option data-code="PK" value="Pakistan">🇵🇰 Pakistan</option>
-<option data-code="PW" value="Palaos (Palau)">🇵🇼 Palaos (Palau)</option>
-<option data-code="PS" value="Palestine">🇵🇸 Palestine</option>
-<option data-code="PA" value="Panama">🇵🇦 Panama</option>
-<option data-code="PG" value="Papouasie-Nouvelle-Guinée">🇵🇬 Papouasie-Nouvelle-Guinée</option>
-<option data-code="PY" value="Paraguay">🇵🇾 Paraguay</option>
-<option data-code="NL" value="Pays-Bas">🇳🇱 Pays-Bas</option>
-<option data-code="BQ" value="Pays-Bas caribéens">🇧🇶 Pays-Bas caribéens</option>
-<option data-code="PE" value="Pérou">🇵🇪 Pérou</option>
-<option data-code="PH" value="Philippines">🇵🇭 Philippines</option>
-<option data-code="PL" value="Pologne">🇵🇱 Pologne</option>
-<option data-code="PF" value="Polynésie française">🇵🇫 Polynésie française</option>
-<option data-code="PR" value="Porto Rico">🇵🇷 Porto Rico</option>
-<option data-code="PT" value="Portugal">🇵🇹 Portugal</option>
-<option data-code="QA" value="Qatar">🇶🇦 Qatar</option>
-<option data-code="CF" value="République centrafricaine">🇨🇫 République centrafricaine</option>
-<option data-code="DO" value="République dominicaine">🇩🇴 République dominicaine</option>
-<option data-code="RE" value="Réunion">🇷🇪 Réunion</option>
-<option data-code="RO" value="Roumanie">🇷🇴 Roumanie</option>
-<option data-code="GB" value="Royaume-Uni">🇬🇧 Royaume-Uni</option>
-<option data-code="RU" value="Russie">🇷🇺 Russie</option>
-<option data-code="RW" value="Rwanda">🇷🇼 Rwanda</option>
-<option data-code="EH" value="Sahara Occidental">🇪🇭 Sahara Occidental</option>
-<option data-code="BL" value="Saint-Barthélemy">🇧🇱 Saint-Barthélemy</option>
-<option data-code="KN" value="Saint-Christophe-et-Niévès">🇰🇳 Saint-Christophe-et-Niévès</option>
-<option data-code="SM" value="Saint-Marin">🇸🇲 Saint-Marin</option>
-<option data-code="MF" value="Saint-Martin">🇲🇫 Saint-Martin</option>
-<option data-code="SX" value="Saint-Martin">🇸🇽 Saint-Martin</option>
-<option data-code="PM" value="Saint-Pierre-et-Miquelon">🇵🇲 Saint-Pierre-et-Miquelon</option>
-<option data-code="VC" value="Saint-Vincent-et-les-Grenadines">🇻🇨 Saint-Vincent-et-les-Grenadines</option>
-<option data-code="SH" value="Sainte-Hélène, Ascension et Tristan da Cunha">🇸🇭 Sainte-Hélène, Ascension et Tristan da Cunha</option>
-<option data-code="LC" value="Sainte-Lucie">🇱🇨 Sainte-Lucie</option>
-<option data-code="SV" value="Salvador">🇸🇻 Salvador</option>
-<option data-code="WS" value="Samoa">🇼🇸 Samoa</option>
-<option data-code="AS" value="Samoa américaines">🇦🇸 Samoa américaines</option>
-<option data-code="ST" value="São Tomé et Príncipe">🇸🇹 São Tomé et Príncipe</option>
-<option data-code="SN" value="Sénégal">🇸🇳 Sénégal</option>
-<option data-code="RS" value="Serbie">🇷🇸 Serbie</option>
-<option data-code="SC" value="Seychelles">🇸🇨 Seychelles</option>
-<option data-code="SL" value="Sierra Leone">🇸🇱 Sierra Leone</option>
-<option data-code="SG" value="Singapour">🇸🇬 Singapour</option>
-<option data-code="SK" value="Slovaquie">🇸🇰 Slovaquie</option>
-<option data-code="SI" value="Slovénie">🇸🇮 Slovénie</option>
-<option data-code="SO" value="Somalie">🇸🇴 Somalie</option>
-<option data-code="SD" value="Soudan">🇸🇩 Soudan</option>
-<option data-code="SS" value="Soudan du Sud">🇸🇸 Soudan du Sud</option>
-<option data-code="LK" value="Sri Lanka">🇱🇰 Sri Lanka</option>
-<option data-code="SE" value="Suède">🇸🇪 Suède</option>
-<option data-code="CH" value="Suisse">🇨🇭 Suisse</option>
-<option data-code="SR" value="Surinam">🇸🇷 Surinam</option>
-<option data-code="SJ" value="Svalbard et Jan Mayen">🇸🇯 Svalbard et Jan Mayen</option>
-<option data-code="SZ" value="Swaziland">🇸🇿 Swaziland</option>
-<option data-code="SY" value="Syrie">🇸🇾 Syrie</option>
-<option data-code="TJ" value="Tadjikistan">🇹🇯 Tadjikistan</option>
-<option data-code="TW" value="Taïwan">🇹🇼 Taïwan</option>
-<option data-code="TZ" value="Tanzanie">🇹🇿 Tanzanie</option>
-<option data-code="TD" value="Tchad">🇹🇩 Tchad</option>
-<option data-code="CZ" value="Tchéquie">🇨🇿 Tchéquie</option>
-<option data-code="TF" value="Terres australes et antarctiques françaises">🇹🇫 Terres australes et antarctiques françaises</option>
-<option data-code="IO" value="Territoire britannique de l'océan Indien">🇮🇴 Territoire britannique de l'océan Indien</option>
-<option data-code="TH" value="Thaïlande">🇹🇭 Thaïlande</option>
-<option data-code="TL" value="Timor oriental">🇹🇱 Timor oriental</option>
-<option data-code="TG" value="Togo">🇹🇬 Togo</option>
-<option data-code="TK" value="Tokelau">🇹🇰 Tokelau</option>
-<option data-code="TO" value="Tonga">🇹🇴 Tonga</option>
-<option data-code="TT" value="Trinité-et-Tobago">🇹🇹 Trinité-et-Tobago</option>
-<option data-code="TN" value="Tunisie">🇹🇳 Tunisie</option>
-<option data-code="TM" value="Turkménistan">🇹🇲 Turkménistan</option>
-<option data-code="TR" value="Turquie">🇹🇷 Turquie</option>
-<option data-code="TV" value="Tuvalu">🇹🇻 Tuvalu</option>
-<option data-code="UA" value="Ukraine">🇺🇦 Ukraine</option>
-<option data-code="UY" value="Uruguay">🇺🇾 Uruguay</option>
-<option data-code="VU" value="Vanuatu">🇻🇺 Vanuatu</option>
-<option data-code="VE" value="Venezuela">🇻🇪 Venezuela</option>
-<option data-code="VN" value="Viêt Nam">🇻🇳 Viêt Nam</option>
-<option data-code="WF" value="Wallis-et-Futuna">🇼🇫 Wallis-et-Futuna</option>
-<option data-code="YE" value="Yémen">🇾🇪 Yémen</option>
-<option data-code="ZM" value="Zambie">🇿🇲 Zambie</option>
-<option data-code="ZW" value="Zimbabwe">🇿🇼 Zimbabwe</option>
+                                <select value={voteForm.countryCode} onChange={handleCountryChange} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none focus:outline-none focus:border-[#3B82F6]/50">
+                                    <option value="AF" data-name="Afghanistan">🇦🇫 Afghanistan</option>
+<option value="ZA" data-name="Afrique du Sud">🇿🇦 Afrique du Sud</option>
+<option value="AX" data-name="Ahvenanmaa">🇦🇽 Ahvenanmaa</option>
+<option value="AL" data-name="Albanie">🇦🇱 Albanie</option>
+<option value="DZ" data-name="Algérie">🇩🇿 Algérie</option>
+<option value="DE" data-name="Allemagne">🇩🇪 Allemagne</option>
+<option value="AD" data-name="Andorre">🇦🇩 Andorre</option>
+<option value="AO" data-name="Angola">🇦🇴 Angola</option>
+<option value="AI" data-name="Anguilla">🇦🇮 Anguilla</option>
+<option value="AQ" data-name="Antarctique">🇦🇶 Antarctique</option>
+<option value="AG" data-name="Antigua-et-Barbuda">🇦🇬 Antigua-et-Barbuda</option>
+<option value="SA" data-name="Arabie Saoudite">🇸🇦 Arabie Saoudite</option>
+<option value="AR" data-name="Argentine">🇦🇷 Argentine</option>
+<option value="AM" data-name="Arménie">🇦🇲 Arménie</option>
+<option value="AW" data-name="Aruba">🇦🇼 Aruba</option>
+<option value="AU" data-name="Australie">🇦🇺 Australie</option>
+<option value="AT" data-name="Autriche">🇦🇹 Autriche</option>
+<option value="AZ" data-name="Azerbaïdjan">🇦🇿 Azerbaïdjan</option>
+<option value="BS" data-name="Bahamas">🇧🇸 Bahamas</option>
+<option value="BH" data-name="Bahreïn">🇧🇭 Bahreïn</option>
+<option value="BD" data-name="Bangladesh">🇧🇩 Bangladesh</option>
+<option value="BB" data-name="Barbade">🇧🇧 Barbade</option>
+<option value="BE" data-name="Belgique">🇧🇪 Belgique</option>
+<option value="BZ" data-name="Belize">🇧🇿 Belize</option>
+<option value="BJ" data-name="Bénin">🇧🇯 Bénin</option>
+<option value="BM" data-name="Bermudes">🇧🇲 Bermudes</option>
+<option value="BT" data-name="Bhoutan">🇧🇹 Bhoutan</option>
+<option value="BY" data-name="Biélorussie">🇧🇾 Biélorussie</option>
+<option value="MM" data-name="Birmanie">🇲🇲 Birmanie</option>
+<option value="BO" data-name="Bolivie">🇧🇴 Bolivie</option>
+<option value="BA" data-name="Bosnie-Herzégovine">🇧🇦 Bosnie-Herzégovine</option>
+<option value="BW" data-name="Botswana">🇧🇼 Botswana</option>
+<option value="BR" data-name="Brésil">🇧🇷 Brésil</option>
+<option value="BN" data-name="Brunei">🇧🇳 Brunei</option>
+<option value="BG" data-name="Bulgarie">🇧🇬 Bulgarie</option>
+<option value="BF" data-name="Burkina Faso">🇧🇫 Burkina Faso</option>
+<option value="BI" data-name="Burundi">🇧🇮 Burundi</option>
+<option value="KH" data-name="Cambodge">🇰🇭 Cambodge</option>
+<option value="CM" data-name="Cameroun">🇨🇲 Cameroun</option>
+<option value="CA" data-name="Canada">🇨🇦 Canada</option>
+<option value="CL" data-name="Chili">🇨🇱 Chili</option>
+<option value="CN" data-name="Chine">🇨🇳 Chine</option>
+<option value="CY" data-name="Chypre">🇨🇾 Chypre</option>
+<option value="VA" data-name="Cité du Vatican">🇻🇦 Cité du Vatican</option>
+<option value="CO" data-name="Colombie">🇨🇴 Colombie</option>
+<option value="KM" data-name="Comores">🇰🇲 Comores</option>
+<option value="CG" data-name="Congo">🇨🇬 Congo</option>
+<option value="CD" data-name="Congo (Rép. dém.)">🇨🇩 Congo (Rép. dém.)</option>
+<option value="KP" data-name="Corée du Nord">🇰🇵 Corée du Nord</option>
+<option value="KR" data-name="Corée du Sud">🇰🇷 Corée du Sud</option>
+<option value="CR" data-name="Costa Rica">🇨🇷 Costa Rica</option>
+<option value="CI" data-name="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+<option value="HR" data-name="Croatie">🇭🇷 Croatie</option>
+<option value="CU" data-name="Cuba">🇨🇺 Cuba</option>
+<option value="CW" data-name="Curaçao">🇨🇼 Curaçao</option>
+<option value="DK" data-name="Danemark">🇩🇰 Danemark</option>
+<option value="DJ" data-name="Djibouti">🇩🇯 Djibouti</option>
+<option value="DM" data-name="Dominique">🇩🇲 Dominique</option>
+<option value="EG" data-name="Égypte">🇪🇬 Égypte</option>
+<option value="AE" data-name="Émirats arabes unis">🇦🇪 Émirats arabes unis</option>
+<option value="EC" data-name="Équateur">🇪🇨 Équateur</option>
+<option value="ER" data-name="Érythrée">🇪🇷 Érythrée</option>
+<option value="ES" data-name="Espagne">🇪🇸 Espagne</option>
+<option value="EE" data-name="Estonie">🇪🇪 Estonie</option>
+<option value="US" data-name="États-Unis">🇺🇸 États-Unis</option>
+<option value="ET" data-name="Éthiopie">🇪🇹 Éthiopie</option>
+<option value="FJ" data-name="Fidji">🇫🇯 Fidji</option>
+<option value="FI" data-name="Finlande">🇫🇮 Finlande</option>
+<option value="FR" data-name="France">🇫🇷 France</option>
+<option value="GA" data-name="Gabon">🇬🇦 Gabon</option>
+<option value="GM" data-name="Gambie">🇬🇲 Gambie</option>
+<option value="GE" data-name="Géorgie">🇬🇪 Géorgie</option>
+<option value="GS" data-name="Géorgie du Sud-et-les Îles Sandwich du Sud">🇬🇸 Géorgie du Sud-et-les Îles Sandwich du Sud</option>
+<option value="GH" data-name="Ghana">🇬🇭 Ghana</option>
+<option value="GI" data-name="Gibraltar">🇬🇮 Gibraltar</option>
+<option value="GR" data-name="Grèce">🇬🇷 Grèce</option>
+<option value="GD" data-name="Grenade">🇬🇩 Grenade</option>
+<option value="GL" data-name="Groenland">🇬🇱 Groenland</option>
+<option value="GP" data-name="Guadeloupe">🇬🇵 Guadeloupe</option>
+<option value="GU" data-name="Guam">🇬🇺 Guam</option>
+<option value="GT" data-name="Guatemala">🇬🇹 Guatemala</option>
+<option value="GG" data-name="Guernesey">🇬🇬 Guernesey</option>
+<option value="GN" data-name="Guinée">🇬🇳 Guinée</option>
+<option value="GQ" data-name="Guinée équatoriale">🇬🇶 Guinée équatoriale</option>
+<option value="GW" data-name="Guinée-Bissau">🇬🇼 Guinée-Bissau</option>
+<option value="GY" data-name="Guyana">🇬🇾 Guyana</option>
+<option value="GF" data-name="Guyane">🇬🇫 Guyane</option>
+<option value="HT" data-name="Haïti">🇭🇹 Haïti</option>
+<option value="HN" data-name="Honduras">🇭🇳 Honduras</option>
+<option value="HK" data-name="Hong Kong">🇭🇰 Hong Kong</option>
+<option value="HU" data-name="Hongrie">🇭🇺 Hongrie</option>
+<option value="BV" data-name="Île Bouvet">🇧🇻 Île Bouvet</option>
+<option value="CX" data-name="Île Christmas">🇨🇽 Île Christmas</option>
+<option value="IM" data-name="Île de Man">🇮🇲 Île de Man</option>
+<option value="MU" data-name="Île Maurice">🇲🇺 Île Maurice</option>
+<option value="NF" data-name="Île Norfolk">🇳🇫 Île Norfolk</option>
+<option value="KY" data-name="Îles Caïmans">🇰🇾 Îles Caïmans</option>
+<option value="CC" data-name="Îles Cocos">🇨🇨 Îles Cocos</option>
+<option value="CK" data-name="Îles Cook">🇨🇰 Îles Cook</option>
+<option value="CV" data-name="Îles du Cap-Vert">🇨🇻 Îles du Cap-Vert</option>
+<option value="FO" data-name="Îles Féroé">🇫🇴 Îles Féroé</option>
+<option value="HM" data-name="Îles Heard-et-MacDonald">🇭🇲 Îles Heard-et-MacDonald</option>
+<option value="FK" data-name="Îles Malouines">🇫🇰 Îles Malouines</option>
+<option value="MP" data-name="Îles Mariannes du Nord">🇲🇵 Îles Mariannes du Nord</option>
+<option value="MH" data-name="Îles Marshall">🇲🇭 Îles Marshall</option>
+<option value="UM" data-name="Îles mineures éloignées des États-Unis">🇺🇲 Îles mineures éloignées des États-Unis</option>
+<option value="PN" data-name="Îles Pitcairn">🇵🇳 Îles Pitcairn</option>
+<option value="SB" data-name="Îles Salomon">🇸🇧 Îles Salomon</option>
+<option value="TC" data-name="Îles Turques-et-Caïques">🇹🇨 Îles Turques-et-Caïques</option>
+<option value="VG" data-name="Îles Vierges britanniques">🇻🇬 Îles Vierges britanniques</option>
+<option value="VI" data-name="Îles Vierges des États-Unis">🇻🇮 Îles Vierges des États-Unis</option>
+<option value="IN" data-name="Inde">🇮🇳 Inde</option>
+<option value="ID" data-name="Indonésie">🇮🇩 Indonésie</option>
+<option value="IQ" data-name="Irak">🇮🇶 Irak</option>
+<option value="IR" data-name="Iran">🇮🇷 Iran</option>
+<option value="IE" data-name="Irlande">🇮🇪 Irlande</option>
+<option value="IS" data-name="Islande">🇮🇸 Islande</option>
+<option value="IL" data-name="Israël">🇮🇱 Israël</option>
+<option value="IT" data-name="Italie">🇮🇹 Italie</option>
+<option value="JM" data-name="Jamaïque">🇯🇲 Jamaïque</option>
+<option value="JP" data-name="Japon">🇯🇵 Japon</option>
+<option value="JE" data-name="Jersey">🇯🇪 Jersey</option>
+<option value="JO" data-name="Jordanie">🇯🇴 Jordanie</option>
+<option value="KZ" data-name="Kazakhstan">🇰🇿 Kazakhstan</option>
+<option value="KE" data-name="Kenya">🇰🇪 Kenya</option>
+<option value="KG" data-name="Kirghizistan">🇰🇬 Kirghizistan</option>
+<option value="KI" data-name="Kiribati">🇰🇮 Kiribati</option>
+<option value="XK" data-name="Kosovo">🇽🇰 Kosovo</option>
+<option value="KW" data-name="Koweït">🇰🇼 Koweït</option>
+<option value="LA" data-name="Laos">🇱🇦 Laos</option>
+<option value="LS" data-name="Lesotho">🇱🇸 Lesotho</option>
+<option value="LV" data-name="Lettonie">🇱🇻 Lettonie</option>
+<option value="LB" data-name="Liban">🇱🇧 Liban</option>
+<option value="LR" data-name="Liberia">🇱🇷 Liberia</option>
+<option value="LY" data-name="Libye">🇱🇾 Libye</option>
+<option value="LI" data-name="Liechtenstein">🇱🇮 Liechtenstein</option>
+<option value="LT" data-name="Lituanie">🇱🇹 Lituanie</option>
+<option value="LU" data-name="Luxembourg">🇱🇺 Luxembourg</option>
+<option value="MO" data-name="Macao">🇲🇴 Macao</option>
+<option value="MK" data-name="Macédoine du Nord">🇲🇰 Macédoine du Nord</option>
+<option value="MG" data-name="Madagascar">🇲🇬 Madagascar</option>
+<option value="MY" data-name="Malaisie">🇲🇾 Malaisie</option>
+<option value="MW" data-name="Malawi">🇲🇼 Malawi</option>
+<option value="MV" data-name="Maldives">🇲🇻 Maldives</option>
+<option value="ML" data-name="Mali">🇲🇱 Mali</option>
+<option value="MT" data-name="Malte">🇲🇹 Malte</option>
+<option value="MA" data-name="Maroc">🇲🇦 Maroc</option>
+<option value="MQ" data-name="Martinique">🇲🇶 Martinique</option>
+<option value="MR" data-name="Mauritanie">🇲🇷 Mauritanie</option>
+<option value="YT" data-name="Mayotte">🇾🇹 Mayotte</option>
+<option value="MX" data-name="Mexique">🇲🇽 Mexique</option>
+<option value="FM" data-name="Micronésie">🇫🇲 Micronésie</option>
+<option value="MD" data-name="Moldavie">🇲🇩 Moldavie</option>
+<option value="MC" data-name="Monaco">🇲🇨 Monaco</option>
+<option value="MN" data-name="Mongolie">🇲🇳 Mongolie</option>
+<option value="ME" data-name="Monténégro">🇲🇪 Monténégro</option>
+<option value="MS" data-name="Montserrat">🇲🇸 Montserrat</option>
+<option value="MZ" data-name="Mozambique">🇲🇿 Mozambique</option>
+<option value="NA" data-name="Namibie">🇳🇦 Namibie</option>
+<option value="NR" data-name="Nauru">🇳🇷 Nauru</option>
+<option value="NP" data-name="Népal">🇳🇵 Népal</option>
+<option value="NI" data-name="Nicaragua">🇳🇮 Nicaragua</option>
+<option value="NE" data-name="Niger">🇳🇪 Niger</option>
+<option value="NG" data-name="Nigéria">🇳🇬 Nigéria</option>
+<option value="NU" data-name="Niue">🇳🇺 Niue</option>
+<option value="NO" data-name="Norvège">🇳🇴 Norvège</option>
+<option value="NC" data-name="Nouvelle-Calédonie">🇳🇨 Nouvelle-Calédonie</option>
+<option value="NZ" data-name="Nouvelle-Zélande">🇳🇿 Nouvelle-Zélande</option>
+<option value="OM" data-name="Oman">🇴🇲 Oman</option>
+<option value="UG" data-name="Ouganda">🇺🇬 Ouganda</option>
+<option value="UZ" data-name="Ouzbékistan">🇺🇿 Ouzbékistan</option>
+<option value="PK" data-name="Pakistan">🇵🇰 Pakistan</option>
+<option value="PW" data-name="Palaos (Palau)">🇵🇼 Palaos (Palau)</option>
+<option value="PS" data-name="Palestine">🇵🇸 Palestine</option>
+<option value="PA" data-name="Panama">🇵🇦 Panama</option>
+<option value="PG" data-name="Papouasie-Nouvelle-Guinée">🇵🇬 Papouasie-Nouvelle-Guinée</option>
+<option value="PY" data-name="Paraguay">🇵🇾 Paraguay</option>
+<option value="NL" data-name="Pays-Bas">🇳🇱 Pays-Bas</option>
+<option value="BQ" data-name="Pays-Bas caribéens">🇧🇶 Pays-Bas caribéens</option>
+<option value="PE" data-name="Pérou">🇵🇪 Pérou</option>
+<option value="PH" data-name="Philippines">🇵🇭 Philippines</option>
+<option value="PL" data-name="Pologne">🇵🇱 Pologne</option>
+<option value="PF" data-name="Polynésie française">🇵🇫 Polynésie française</option>
+<option value="PR" data-name="Porto Rico">🇵🇷 Porto Rico</option>
+<option value="PT" data-name="Portugal">🇵🇹 Portugal</option>
+<option value="QA" data-name="Qatar">🇶🇦 Qatar</option>
+<option value="CF" data-name="République centrafricaine">🇨🇫 République centrafricaine</option>
+<option value="DO" data-name="République dominicaine">🇩🇴 République dominicaine</option>
+<option value="RE" data-name="Réunion">🇷🇪 Réunion</option>
+<option value="RO" data-name="Roumanie">🇷🇴 Roumanie</option>
+<option value="GB" data-name="Royaume-Uni">🇬🇧 Royaume-Uni</option>
+<option value="RU" data-name="Russie">🇷🇺 Russie</option>
+<option value="RW" data-name="Rwanda">🇷🇼 Rwanda</option>
+<option value="EH" data-name="Sahara Occidental">🇪🇭 Sahara Occidental</option>
+<option value="BL" data-name="Saint-Barthélemy">🇧🇱 Saint-Barthélemy</option>
+<option value="KN" data-name="Saint-Christophe-et-Niévès">🇰🇳 Saint-Christophe-et-Niévès</option>
+<option value="SM" data-name="Saint-Marin">🇸🇲 Saint-Marin</option>
+<option value="MF" data-name="Saint-Martin">🇲🇫 Saint-Martin</option>
+<option value="SX" data-name="Saint-Martin">🇸🇽 Saint-Martin</option>
+<option value="PM" data-name="Saint-Pierre-et-Miquelon">🇵🇲 Saint-Pierre-et-Miquelon</option>
+<option value="VC" data-name="Saint-Vincent-et-les-Grenadines">🇻🇨 Saint-Vincent-et-les-Grenadines</option>
+<option value="SH" data-name="Sainte-Hélène, Ascension et Tristan da Cunha">🇸🇭 Sainte-Hélène, Ascension et Tristan da Cunha</option>
+<option value="LC" data-name="Sainte-Lucie">🇱🇨 Sainte-Lucie</option>
+<option value="SV" data-name="Salvador">🇸🇻 Salvador</option>
+<option value="WS" data-name="Samoa">🇼🇸 Samoa</option>
+<option value="AS" data-name="Samoa américaines">🇦🇸 Samoa américaines</option>
+<option value="ST" data-name="São Tomé et Príncipe">🇸🇹 São Tomé et Príncipe</option>
+<option value="SN" data-name="Sénégal">🇸🇳 Sénégal</option>
+<option value="RS" data-name="Serbie">🇷🇸 Serbie</option>
+<option value="SC" data-name="Seychelles">🇸🇨 Seychelles</option>
+<option value="SL" data-name="Sierra Leone">🇸🇱 Sierra Leone</option>
+<option value="SG" data-name="Singapour">🇸🇬 Singapour</option>
+<option value="SK" data-name="Slovaquie">🇸🇰 Slovaquie</option>
+<option value="SI" data-name="Slovénie">🇸🇮 Slovénie</option>
+<option value="SO" data-name="Somalie">🇸🇴 Somalie</option>
+<option value="SD" data-name="Soudan">🇸🇩 Soudan</option>
+<option value="SS" data-name="Soudan du Sud">🇸🇸 Soudan du Sud</option>
+<option value="LK" data-name="Sri Lanka">🇱🇰 Sri Lanka</option>
+<option value="SE" data-name="Suède">🇸🇪 Suède</option>
+<option value="CH" data-name="Suisse">🇨🇭 Suisse</option>
+<option value="SR" data-name="Surinam">🇸🇷 Surinam</option>
+<option value="SJ" data-name="Svalbard et Jan Mayen">🇸🇯 Svalbard et Jan Mayen</option>
+<option value="SZ" data-name="Swaziland">🇸🇿 Swaziland</option>
+<option value="SY" data-name="Syrie">🇸🇾 Syrie</option>
+<option value="TJ" data-name="Tadjikistan">🇹🇯 Tadjikistan</option>
+<option value="TW" data-name="Taïwan">🇹🇼 Taïwan</option>
+<option value="TZ" data-name="Tanzanie">🇹🇿 Tanzanie</option>
+<option value="TD" data-name="Tchad">🇹🇩 Tchad</option>
+<option value="CZ" data-name="Tchéquie">🇨🇿 Tchéquie</option>
+<option value="TF" data-name="Terres australes et antarctiques françaises">🇹🇫 Terres australes et antarctiques françaises</option>
+<option value="IO" data-name="Territoire britannique de l'océan Indien">🇮🇴 Territoire britannique de l'océan Indien</option>
+<option value="TH" data-name="Thaïlande">🇹🇭 Thaïlande</option>
+<option value="TL" data-name="Timor oriental">🇹🇱 Timor oriental</option>
+<option value="TG" data-name="Togo">🇹🇬 Togo</option>
+<option value="TK" data-name="Tokelau">🇹🇰 Tokelau</option>
+<option value="TO" data-name="Tonga">🇹🇴 Tonga</option>
+<option value="TT" data-name="Trinité-et-Tobago">🇹🇹 Trinité-et-Tobago</option>
+<option value="TN" data-name="Tunisie">🇹🇳 Tunisie</option>
+<option value="TM" data-name="Turkménistan">🇹🇲 Turkménistan</option>
+<option value="TR" data-name="Turquie">🇹🇷 Turquie</option>
+<option value="TV" data-name="Tuvalu">🇹🇻 Tuvalu</option>
+<option value="UA" data-name="Ukraine">🇺🇦 Ukraine</option>
+<option value="UY" data-name="Uruguay">🇺🇾 Uruguay</option>
+<option value="VU" data-name="Vanuatu">🇻🇺 Vanuatu</option>
+<option value="VE" data-name="Venezuela">🇻🇪 Venezuela</option>
+<option value="VN" data-name="Viêt Nam">🇻🇳 Viêt Nam</option>
+<option value="WF" data-name="Wallis-et-Futuna">🇼🇫 Wallis-et-Futuna</option>
+<option value="YE" data-name="Yémen">🇾🇪 Yémen</option>
+<option value="ZM" data-name="Zambie">🇿🇲 Zambie</option>
+<option value="ZW" data-name="Zimbabwe">🇿🇼 Zimbabwe</option>
                                 </select>
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#94A3B8]">
                                     <i className="fas fa-chevron-down text-xs"></i>
