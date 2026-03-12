@@ -179,3 +179,19 @@ https://nextjs.org/telemetry
   digest: '2013383212'
 }
  POST / 500 in 515ms (compile: 3ms, render: 512ms)
+✓ Compiled in 1316ms
+ GET / 200 in 3.5s (compile: 1972ms, render: 1523ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:13:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+  11 |
+  12 | if (!ADMIN_SECRET_TOKEN) {
+> 13 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  14 | }
+  15 |
+  16 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 713ms (compile: 8ms, render: 705ms)
