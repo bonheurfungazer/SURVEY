@@ -317,14 +317,14 @@ export default function Home() {
     const init = async () => {
       // Auto-detect country
       try {
-          const res = await fetch('https://ipapi.co/json/');
+          const res = await fetch('https://ipwho.is/');
           const data = await res.json();
-          if (data && data.country_name && data.country) {
+          if (data && data.country && data.country_code) {
               setVoteForm(prev => ({
                   ...prev,
-                  country: data.country_name,
-                  countryCode: data.country,
-                  contact: countryDialCodes[data.country] || ''
+                  country: data.country,
+                  countryCode: data.country_code,
+                  contact: countryDialCodes[data.country_code] || ''
               }));
           }
       } catch (e) {
@@ -1339,7 +1339,7 @@ export default function Home() {
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <i className="fab fa-whatsapp text-[#10B981]/70 text-sm"></i>
                                 </div>
-                                <input type="text" value={voteForm.contact} onChange={(e) => setVoteForm({...voteForm, contact: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-[#94A3B8]/50 focus:outline-none focus:border-[#3B82F6]/50" placeholder="n° WhatsApp (ex: +237...)" pattern="^\\+?[1-9]\\d{1,14}$" title="Veuillez entrer un numéro valide (ex: +33612345678)" required />
+                                <input type="text" value={voteForm.contact} onChange={(e) => setVoteForm({...voteForm, contact: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-[#94A3B8]/50 focus:outline-none focus:border-[#3B82F6]/50" placeholder="n° WhatsApp (ex: +237...)" pattern="^\+?[0-9\s\-\.()]{7,25}$" title="Veuillez entrer un numéro valide (ex: +33612345678)" required />
                             </div>
                         </div>
 
