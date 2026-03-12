@@ -1318,7 +1318,7 @@ export default function Home() {
                             <i className="fas fa-terminal text-2xl"></i>
                             <span className="font-bold text-lg tracking-wider">COMPATIBILITÉ CLI</span>
                         </div>
-                        <span className="text-sm font-semibold text-center text-white">posibilité de se connecter...... en plus de l'integration dans les projet</span>
+                        <span className="text-sm font-semibold text-center text-white">possibilité de l'utiliser pour se connecter aux outils ci-dessous en plus de l'intégration dans les projets</span>
                         <div className="flex flex-wrap justify-center gap-2 mt-2">
                             <span className="bg-[#10B981]/20 text-[#10B981] px-3 py-1 rounded-md text-sm font-bold border border-[#10B981]/30">Claude Code</span>
                             <span className="bg-[#3B82F6]/20 text-[#3B82F6] px-3 py-1 rounded-md text-sm font-bold border border-[#3B82F6]/30">Gemini CLI</span>
@@ -1332,7 +1332,7 @@ export default function Home() {
                         <div className="mb-5">
                             <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Pays de résidence</label>
                             <div className="relative">
-                                <select value={voteForm.countryCode} onChange={handleCountryChange} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none focus:outline-none focus:border-[#3B82F6]/50">
+                                <select value={voteForm.countryCode} disabled className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none cursor-not-allowed opacity-80">
                                     <option value="AF" data-name="Afghanistan">🇦🇫 Afghanistan</option>
 <option value="ZA" data-name="Afrique du Sud">🇿🇦 Afrique du Sud</option>
 <option value="AX" data-name="Ahvenanmaa">🇦🇽 Ahvenanmaa</option>
@@ -1584,9 +1584,6 @@ export default function Home() {
 <option value="ZM" data-name="Zambie">🇿🇲 Zambie</option>
 <option value="ZW" data-name="Zimbabwe">🇿🇼 Zimbabwe</option>
                                 </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#94A3B8]">
-                                    <i className="fas fa-chevron-down text-xs"></i>
-                                </div>
                             </div>
                         </div>
 
