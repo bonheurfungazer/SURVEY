@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 
 // Secret key for hashing/signing the cookie
 const ADMIN_COOKIE_NAME = 'admin_session'
-const ADMIN_SECRET_TOKEN = process.env.ADMIN_SECRET_TOKEN
+const ADMIN_SECRET_TOKEN = process.env.ADMIN_SECRET_TOKEN as string
 
 if (!ADMIN_SECRET_TOKEN) {
   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
