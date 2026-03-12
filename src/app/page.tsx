@@ -4,6 +4,21 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { verifyAdminCredentials, fetchSensitiveAdminData, checkAdminAuthStatus, logoutAdmin } from './actions'
 
+const emojiCache: Record<string, string> = {}
+const getFlagEmoji = (countryCode: string) => {
+  if (!countryCode) return '🏳️'
+  if (emojiCache[countryCode]) return emojiCache[countryCode]
+
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map(char => 127397 + char.charCodeAt(0))
+
+  const emoji = String.fromCodePoint(...codePoints)
+  emojiCache[countryCode] = emoji
+  return emoji
+}
+
 export default function Home() {
   const [currentTab, setCurrentTab] = useState('home')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -480,15 +495,6 @@ export default function Home() {
       )
       .subscribe()
     return channel
-  }
-
-  const getFlagEmoji = (countryCode: string) => {
-    if (!countryCode) return '🏳️'
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 127397 + char.charCodeAt(0))
-    return String.fromCodePoint(...codePoints)
   }
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
