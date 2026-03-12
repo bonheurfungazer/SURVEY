@@ -2,12 +2,135 @@
 > my-app@0.1.0 dev
 > kill -9 $(lsof -t -i:3000) 2>/dev/null || true && next dev
 
-⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
 ▲ Next.js 16.1.6 (Turbopack)
-- Local:         http://localhost:3001
-- Network:       http://192.168.0.2:3001
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-⨯ Unable to acquire lock at /app/.next/dev/lock, is another instance of next dev running?
-  Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
-[?25h
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+✓ Ready in 1206ms
+○ Compiling / ...
+ GET / 200 in 7.3s (compile: 6.1s, render: 1149ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 2.1s (compile: 12ms, render: 2.1s)
+ GET / 200 in 62ms (compile: 4ms, render: 58ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 418ms (compile: 5ms, render: 414ms)
+ GET / 200 in 69ms (compile: 5ms, render: 64ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 513ms (compile: 4ms, render: 509ms)
+ GET / 200 in 72ms (compile: 9ms, render: 63ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 513ms (compile: 4ms, render: 509ms)
+ GET / 200 in 81ms (compile: 14ms, render: 67ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 533ms (compile: 4ms, render: 529ms)
+ GET / 200 in 121ms (compile: 16ms, render: 105ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 607ms (compile: 4ms, render: 603ms)
+ GET / 200 in 67ms (compile: 9ms, render: 58ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 512ms (compile: 3ms, render: 509ms)
+ GET / 200 in 68ms (compile: 9ms, render: 59ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:11:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:264:352)
+   9 |
+  10 | if (!ADMIN_SECRET_TOKEN) {
+> 11 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  12 | }
+  13 |
+  14 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '2013383212'
+}
+ POST / 500 in 523ms (compile: 3ms, render: 519ms)

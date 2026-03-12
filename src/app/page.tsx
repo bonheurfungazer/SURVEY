@@ -804,8 +804,15 @@ export default function Home() {
       return
     }
 
+
     if (!voteForm.model) {
       showToast("Veuillez sélectionner un modèle.", 'error')
+      return
+    }
+
+    const phoneRegex = /^\+?[0-9\s\-\.()]{7,25}$/;
+    if (!voteForm.contact || !phoneRegex.test(voteForm.contact)) {
+      showToast("Veuillez renseigner un numéro de téléphone valide (ex: +33612345678).", 'error')
       return
     }
 
@@ -1590,11 +1597,11 @@ export default function Home() {
                         <div className="mb-5">
                             <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider mb-2 uppercase">Modèle souhaité</label>
                             <div className="relative">
-                                <select value={voteForm.model} onChange={(e) => setVoteForm({...voteForm, model: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none focus:outline-none focus:border-[#3B82F6]/50">
-                                    <option value="" disabled hidden>Veuillez sélectionner un modèle</option>
-                                    <option value="Claude Opus 4.6 (et antérieures)">Claude Opus 4.6 (et versions 2026 en descendant)</option>
-                                    <option value="GPT-5.4 Thinking (et antérieures)">GPT-5.4 Thinking (et versions 2026 en descendant)</option>
-                                    <option value="Gemini 3.1 Pro (et antérieures)">Gemini 3.1 Pro (et versions 2026 en descendant)</option>
+                                <select value={voteForm.model} onChange={(e) => setVoteForm({...voteForm, model: e.target.value})} className="w-full bg-[#1A2332] border border-white/5 rounded-xl px-4 py-3.5 text-sm font-semibold text-white appearance-none hover:border-white/20 hover:bg-[#1E293B] focus:outline-none focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/50 transition-all duration-300 cursor-pointer">
+                                    <option value="" disabled hidden className="bg-[#1A2332] text-gray-400">Veuillez sélectionner un modèle</option>
+                                    <option value="Claude Opus 4.6 (et antérieures)" className="bg-[#1A2332] text-white py-2">🧠 Claude Opus 4.6 (et versions 2026 en descendant)</option>
+                                    <option value="GPT-5.4 Thinking (et antérieures)" className="bg-[#1A2332] text-white py-2">🤖 GPT-5.4 Thinking (et versions 2026 en descendant)</option>
+                                    <option value="Gemini 3.1 Pro (et antérieures)" className="bg-[#1A2332] text-white py-2">✨ Gemini 3.1 Pro (et versions 2026 en descendant)</option>
                                 </select>
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#94A3B8]">
                                     <i className="fas fa-chevron-down text-xs"></i>
