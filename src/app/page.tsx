@@ -421,7 +421,7 @@ export default function Home() {
         if (isSignUp) {
             const { data, error } = await supabase.auth.signUp({
                 options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=/?verified=true`,
                 },
                 email: loginEmail,
                 password: loginPassword,

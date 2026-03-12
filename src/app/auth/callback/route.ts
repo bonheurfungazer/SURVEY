@@ -5,6 +5,8 @@ import { cookies } from 'next/headers'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
+  // if "next" is in param, use it as the redirect URL
+  const next = searchParams.get('next') ?? '/?verified=true'
 
   if (code) {
     const cookieStore = await cookies()
@@ -34,10 +36,13 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      return NextResponse.redirect(`${origin}/?verified=true`)
+      return NextResponse.redirect(`${origin}${next}`)
+    } else {
+      console.error('Auth error:', error.message)
+      return NextResponse.redirect(`${origin}/?error=true`)
     }
   }
 
   // Fallback to home page if code exchange fails or no code is present
-  return NextResponse.redirect(`${origin}/?verified=true`)
+  return NextResponse.redirect(`${origin}/`)
 }
