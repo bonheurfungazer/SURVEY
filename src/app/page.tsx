@@ -931,7 +931,7 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-lg bg-[#111823] border border-[#1E293B] flex items-center justify-center text-[#3B82F6] text-sm font-bold">
                         &lt;&gt;
                     </div>
-                    <span className="font-bold text-lg tracking-tight">L'API Unifiée</span>
+                    <span className="font-bold text-lg tracking-tight">L&apos;API Unifiée</span>
                 </div>
                 {!user ? (
                     <button onClick={() => {setShowLoginModal(true); setIsSignUp(false);}} className="text-sm font-semibold text-[#94A3B8] hover:text-white transition-colors flex items-center space-x-2">
@@ -1019,7 +1019,7 @@ export default function Home() {
                             </div>
                         </div>
                     )) : (
-                        <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l'instant</div>
+                        <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l&apos;instant</div>
                     )}
                 </div>
             </div>
@@ -1337,7 +1337,7 @@ export default function Home() {
 
                         <div className="mb-5">
                             <div className="flex items-center justify-between mb-3">
-                                <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider uppercase">Intensité d'utilisation prévue</label>
+                                <label className="block text-[10px] text-[#94A3B8] font-bold tracking-wider uppercase">Intensité d&apos;utilisation prévue</label>
                                 <span className="text-[10px] font-bold text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded-full">{voteForm.intensity}/10</span>
                             </div>
                             <div className="relative w-full h-2 bg-[#1A2332] rounded-full">
@@ -1502,7 +1502,7 @@ export default function Home() {
                             <span className="text-[9px] font-bold tracking-widest uppercase">USAGERS 24H</span>
                         </div>
                         <h3 className="text-2xl font-bold text-[#3B82F6] mb-1 drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]">{adminStats.activeUsers.toLocaleString()}</h3>
-                        <p className="text-[9px] text-[#94A3B8]">Actifs aujourd'hui</p>
+                        <p className="text-[9px] text-[#94A3B8]">Actifs aujourd&apos;hui</p>
                     </div>
                 </div>
 
@@ -1642,7 +1642,7 @@ export default function Home() {
                                 </div>
                             </div>
                         )) : (
-                            <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l'instant</div>
+                            <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l&apos;instant</div>
                         )}
                     </div>
                 </div>
