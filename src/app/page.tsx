@@ -1969,7 +1969,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => {
-                  const url = typeof window !== 'undefined' ? window.location.href : "https://waitlist-ai-chat.vercel.app";
+                  const url = typeof window !== 'undefined' ? window.location.origin : "";
                   const title = "Découvrez cette plateforme d'IA !";
                   const text = "Je viens de voter pour la création de cette nouvelle plateforme d'API IA unifiée. Rejoignez-moi pour l'aider à se lancer !";
 
