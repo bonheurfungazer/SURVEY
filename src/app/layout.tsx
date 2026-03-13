@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
@@ -9,6 +10,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://lapi-unifiee.vercel.app'),
   title: "L'API Unifiée | Votez pour le prochain LLM",
   description: "Accédez aux derniers modèles Claude, Gemini et ChatGPT via API à -80% du prix officiel. Votez dès maintenant pour choisir le prochain modèle intégré.",
   keywords: ["API", "LLM", "ChatGPT", "Claude", "Gemini", "IA", "Intelligence Artificielle", "Vote"],
