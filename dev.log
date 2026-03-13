@@ -1,0 +1,25 @@
+
+> my-app@0.1.0 dev
+> kill -9 $(lsof -t -i:3000) 2>/dev/null || true && next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 1171ms
+ GET / 200 in 796ms (compile: 403ms, render: 393ms)
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (src/app/actions.ts:12:9)
+    at module evaluation (.next-internal/server/app/page/actions.js (server actions loader):1:1)
+    at module evaluation (.next/dev/server/chunks/ssr/_2e8a01dc._.js:255:352)
+  10 |
+  11 | if (!ADMIN_SECRET_TOKEN) {
+> 12 |   throw new Error('ADMIN_SECRET_TOKEN environment variable is not set')
+     |         ^
+  13 | }
+  14 |
+  15 | export async function verifyAdminCredentials(username: string, password: string): Promise<boolean> { {
+  digest: '890965005'
+}
+ POST / 500 in 709ms (compile: 6ms, render: 703ms)
