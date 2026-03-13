@@ -1,0 +1,17 @@
+
+> my-app@0.1.0 dev
+> kill -9 $(lsof -t -i:3000) 2>/dev/null || true && next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 2.3s
+ GET / 200 in 2.6s (compile: 2.2s, render: 438ms)
+ POST / 200 in 40ms (compile: 10ms, render: 30ms)
+ GET / 200 in 102ms (compile: 5ms, render: 97ms)
+ POST / 200 in 14ms (compile: 4ms, render: 10ms)
+ GET / 200 in 94ms (compile: 4ms, render: 89ms)
+ POST / 200 in 13ms (compile: 3ms, render: 9ms)
