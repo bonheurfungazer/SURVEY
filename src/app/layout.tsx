@@ -25,7 +25,7 @@ export const metadata: Metadata = {
       {
         url: 'https://survey-gray-eta.vercel.app/opengraph-image.png',
         width: 1200,
-        height: 630,
+        height: 2003,
         alt: "L'API Unifiée",
       },
     ],
