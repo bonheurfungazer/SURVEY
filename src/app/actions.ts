@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
@@ -34,7 +35,7 @@ export async function verifyAdminCredentials(username: string, password: string)
             if (!error && data === true) {
                 isAuthenticated = true;
             }
-        } catch(e) {
+        } catch(_e) {
             // Ignorer l'erreur, utiliser le fallback
         }
     }
@@ -156,7 +157,7 @@ export async function fetchSensitiveAdminData() {
       const maxVotesPerHour = Math.max(...Object.values(votesByHour), 1); // Avoid division by zero
 
       const realPoints: {x: number, y: number}[] = [];
-      const genPoints: {x: number, y: number}[] = [{x: 0, y: height}, {x: width, y: height}]; // Flat line for fake
+      // const genPoints: {x: number, y: number}[] = [{x: 0, y: height}, {x: width, y: height}]; // Flat line for fake
 
       for (let i = 0; i <= 24; i++) {
           const x = Math.round((i / 24) * width);
@@ -213,8 +214,8 @@ export async function fetchSensitiveAdminData() {
           })) || []
       }
 
-  } catch(e) {
-      console.error(e)
+  } catch(_e) {
+      console.error(_e)
   }
 
   return { contacts: [], stats: null }

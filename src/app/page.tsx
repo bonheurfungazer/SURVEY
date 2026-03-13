@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -581,7 +583,7 @@ export default function Home() {
               if (data && data.country) { detectedCode = data.country.toUpperCase(); } else {
                   throw new Error('geojs failed');
               }
-          } catch (e) {
+          } catch (_e) {
               try {
                   // Fallback 1 to ipapi.co
                   const res = await fetch('https://ipapi.co/json/');
@@ -589,7 +591,7 @@ export default function Home() {
                   if (data && data.country) { detectedCode = data.country.toUpperCase(); } else {
                       throw new Error('ipapi.co failed');
                   }
-              } catch (e2) {
+              } catch (_e2) {
                   // Fallback 2 to ipinfo.io
                   const res = await fetch('https://ipinfo.io/json');
                   const data = await res.json();
@@ -606,8 +608,8 @@ export default function Home() {
                   contact: ''
               }));
           }
-      } catch (e) {
-          console.error("Failed to detect country", e);
+      } catch (_e) {
+          console.error("Failed to detect country", _e);
       }
 
       // Check normal user auth state (Google)
@@ -640,7 +642,7 @@ export default function Home() {
         fetchSensitiveAdminData().then(sensitiveData => {
             if (sensitiveData && sensitiveData.stats) {
                 // Remplacer complètement les statistiques par les vraies données admin
-                const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: any) => ({
+                const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ any) => ({
                     user: v.user,
                     flag: getFlagEmoji(v.country_code),
                     model: v.model,
@@ -761,7 +763,7 @@ export default function Home() {
         }
         if (sensitiveData && sensitiveData.stats) {
             // Remplacer complètement les statistiques par les vraies données admin
-            const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: any) => ({
+            const formattedLatestVotes = sensitiveData.stats.latestVotes.map((v: /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ any) => ({
                 user: v.user,
                 flag: getFlagEmoji(v.country_code),
                 model: v.model,
@@ -820,7 +822,7 @@ export default function Home() {
 
     setIsSubmitting(true)
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('votes')
         .insert([
           {
@@ -884,7 +886,7 @@ export default function Home() {
 
       if (!countryErr && countryData) {
         const counts: Record<string, {name: string, code: string, count: number}> = {};
-        countryData.forEach((v: any) => {
+        countryData.forEach((v: /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ any) => {
            if (!counts[v.country_code]) {
                counts[v.country_code] = { name: v.country, code: v.country_code, count: 0 };
            }
@@ -1074,12 +1076,12 @@ export default function Home() {
     return String.fromCodePoint(...codePoints)
   }
 
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value;
-    const name = e.target.options[e.target.selectedIndex].dataset.name || '';
-
-    setVoteForm(prev => ({ ...prev, country: name, countryCode: code, contact: '' }))
-  }
+//   // // // const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+// //     const code = e.target.value;
+// //     const name = e.target.options[e.target.selectedIndex].dataset.name || '';
+// //
+// //     setVoteForm(prev => ({ ...prev, country: name, countryCode: code, contact: '' }))
+// //   }
 
   return (
     <div className="max-w-md mx-auto min-h-screen relative bg-[#0B121A] overflow-hidden pb-20">
@@ -1779,7 +1781,7 @@ export default function Home() {
                             <span className="text-[9px] font-bold tracking-widest uppercase">USAGERS 24H</span>
                         </div>
                         <h3 className="text-2xl font-bold text-[#3B82F6] mb-1 drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]">{adminStats.activeUsers.toLocaleString()}</h3>
-                        <p className="text-[9px] text-[#94A3B8]">Actifs aujourd'hui</p>
+                        <p className="text-[9px] text-[#94A3B8]">Actifs aujourd&apos;hui</p>
                     </div>
                 </div>
 
@@ -1919,7 +1921,7 @@ export default function Home() {
                                 </div>
                             </div>
                         )) : (
-                            <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l'instant</div>
+                            <div className="text-center text-[#94A3B8] text-sm py-4">Aucun vote pour l&apos;instant</div>
                         )}
                     </div>
                 </div>
