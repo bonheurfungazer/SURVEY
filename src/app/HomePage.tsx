@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { getFlagEmoji, generatePath, Point } from '../lib/utils'
 import { verifyAdminCredentials, fetchSensitiveAdminData, checkAdminAuthStatus, logoutAdmin } from './actions'
 
 
@@ -250,7 +251,7 @@ const countryDialCodes: Record<string, string> = {
   "ZW": "+263"
 };
 
-export default function Home({ initialTotalVotes = 0 }: { initialTotalVotes?: number }) {
+export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }: { initialTotalVotes?: number, initialLatestVotes?: any[] }) {
   const [currentTab, setCurrentTab] = useState('home')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [voteSuccess, setVoteSuccess] = useState(false)
@@ -285,7 +286,7 @@ export default function Home({ initialTotalVotes = 0 }: { initialTotalVotes?: nu
     reelsPercentage: 0,
     generatedPercentage: 0,
     countries: [] as Array<{ name: string; flag: string; count: number; percent: number }>,
-    latestVotes: [] as Array<{ user: string; flag: string; model: string; time: string; real: boolean }>,
+    latestVotes: initialLatestVotes as Array<{ user: string; flag: string; model: string; time: string; real: boolean }>,
     contacts: [] as Array<{ id: string; contact: string; country: string; model: string; useCase: string; date: string; intensity: number }>,
     chartData: { realLine: "M0,90 Q40,90 80,90 T150,90 T250,90 T300,90", genLine: "M0,90 Q40,90 80,90 T150,90 T250,90 T300,90" }
   })
@@ -969,25 +970,7 @@ export default function Home({ initialTotalVotes = 0 }: { initialTotalVotes?: nu
                 return { x, y };
             });
 
-            const generatePath = (points: {x: number, y: number}[]) => {
-                if (points.length === 0) return "M0,90";
-                if (points.length === 1) return `M${points[0].x},${points[0].y}`;
-                if (points.length === 2) return `M${points[0].x},${points[0].y} L${points[1].x},${points[1].y}`;
 
-                let path = `M${points[0].x},${points[0].y}`;
-                for (let i = 0; i < points.length - 1; i++) {
-                    const xc = (points[i].x + points[i + 1].x) / 2;
-                    const yc = (points[i].y + points[i + 1].y) / 2;
-                    // Use bezier curves for smoother graph
-                    if (i === 0) {
-                        path += ` Q${points[i].x},${points[i].y} ${xc},${yc}`;
-                    } else {
-                        path += ` T${xc},${yc}`;
-                    }
-                }
-                path += ` T${points[points.length - 1].x},${points[points.length - 1].y}`;
-                return path;
-            };
 
             realLineStr = generatePath(realPoints);
         }
@@ -1076,14 +1059,6 @@ export default function Home({ initialTotalVotes = 0 }: { initialTotalVotes?: nu
     return channel
   }
 
-  const getFlagEmoji = (countryCode: string) => {
-    if (!countryCode) return '🏳️'
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 127397 + char.charCodeAt(0))
-    return String.fromCodePoint(...codePoints)
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
