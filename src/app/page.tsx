@@ -1085,7 +1085,7 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen relative bg-[#0B121A] overflow-hidden pb-20">
+    <div className="max-w-md mx-auto min-h-screen relative bg-[#0B121A] overflow-x-hidden pb-32">
 
       {/* Toast Notification */}
       {showLoginModal && (
