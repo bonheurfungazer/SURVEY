@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   keywords: ["API", "LLM", "ChatGPT", "Claude", "Gemini", "IA", "Intelligence Artificielle", "Vote"],
   authors: [{ name: "Bonheurfung" }],
   openGraph: {
+    url: "https://survey-gray-eta.vercel.app",
     title: "L'API Unifiée | Votez pour le prochain LLM",
     description: "Accédez aux derniers modèles Claude, Gemini et ChatGPT via API à -80% du prix officiel. Participez au vote !",
     type: "website",
