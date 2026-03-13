@@ -136,3 +136,8 @@ input[type=range]::-webkit-slider-runnable-track {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

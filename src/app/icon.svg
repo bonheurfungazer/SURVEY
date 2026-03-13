@@ -1,0 +1,19 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="64" fill="#0A0F1C"/>
+  <circle cx="128" cy="128" r="40" fill="#3B82F6" fill-opacity="0.1" stroke="#3B82F6" stroke-width="4" stroke-dasharray="8 8"/>
+  <circle cx="128" cy="128" r="24" fill="#8B5CF6" fill-opacity="0.2" stroke="#8B5CF6" stroke-width="4"/>
+  <circle cx="128" cy="128" r="10" fill="#FFFFFF" filter="drop-shadow(0 0 10px #FFFFFF)"/>
+
+  <!-- Incoming streams representing ChatGPT, Claude, Gemini -->
+  <path d="M48 64 C80 80, 96 112, 114 122" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="48" cy="64" r="6" fill="#10B981"/>
+
+  <path d="M48 192 C80 176, 96 144, 114 134" stroke="#F59E0B" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="48" cy="192" r="6" fill="#F59E0B"/>
+
+  <path d="M208 128 L142 128" stroke="#3B82F6" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="208" cy="128" r="6" fill="#3B82F6"/>
+
+  <path d="M128 48 L128 104" stroke="#8B5CF6" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="128" cy="48" r="6" fill="#8B5CF6"/>
+</svg>

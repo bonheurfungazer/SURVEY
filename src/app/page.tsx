@@ -1938,36 +1938,40 @@ export default function Home() {
 
       {/* Share/Marketing Modal */}
       {showShareModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-[#111823] border border-white/10 rounded-[24px] p-8 max-w-md w-full shadow-2xl relative overflow-hidden text-center transform transition-all">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+          <div className="bg-[#0B1120] border border-blue-500/20 rounded-[32px] p-8 max-w-md w-full shadow-[0_0_50px_rgba(59,130,246,0.15)] relative overflow-hidden text-center transform transition-all animate-in zoom-in-95 duration-300">
             {/* Background effects */}
-            <div className="absolute -top-32 -left-32 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500"></div>
+            <div className="absolute -top-32 -left-32 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+            <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}></div>
 
-            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <i className="fas fa-check text-4xl text-green-500 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]"></i>
+            <div className="w-24 h-24 bg-gradient-to-br from-green-400/20 to-emerald-600/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-500/30 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+              <i className="fas fa-check text-5xl text-green-400 drop-shadow-[0_0_15px_rgba(74,222,128,0.8)]"></i>
             </div>
 
-            <h3 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-4 font-['Space_Grotesk']">
-              Merci pour votre vote !
+            <h3 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-blue-100 to-blue-300 mb-4 tracking-tight">
+              Vote enregistré !
             </h3>
 
-            <p className="text-gray-300 mb-6 leading-relaxed">
-              Nous sommes ravis de votre intérêt ! Cependant, pour que cette plateforme voie le jour, nous avons besoin d'atteindre un <strong className="text-white">grand nombre de participants</strong>.
+            <p className="text-slate-300 mb-8 leading-relaxed text-[15px]">
+              Merci pour votre participation. Cependant, ce projet ambitieux ne pourra voir le jour que si nous rassemblons une <strong className="text-white border-b border-blue-500/50 pb-0.5">communauté massive</strong> d'utilisateurs.
             </p>
 
-            <div className="bg-white/5 rounded-xl p-5 mb-8 border border-white/5">
-              <p className="text-white font-semibold mb-2">Aidez-nous à lancer le projet :</p>
-              <p className="text-[#94A3B8] text-sm">Partagez ce lien avec vos amis et collègues intéressés par l'IA.</p>
+            <div className="bg-white/[0.03] rounded-2xl p-6 mb-8 border border-white/[0.08] relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+              <p className="text-white font-bold text-lg mb-2 flex items-center justify-center gap-2">
+                <i className="fas fa-rocket text-blue-400"></i> Propulsez le lancement
+              </p>
+              <p className="text-[#94A3B8] text-sm leading-relaxed">Invitez vos amis et collègues développeurs à rejoindre le mouvement.</p>
             </div>
 
-            <div className="flex flex-col space-y-3">
+            <div className="flex flex-col space-y-4">
               <button
                 type="button"
                 onClick={() => {
-                  const url = typeof window !== 'undefined' ? window.location.href : "https://waitlist-ai-chat.vercel.app";
+                  const url = typeof window !== 'undefined' ? window.location.origin : "";
                   const title = "Découvrez cette plateforme d'IA !";
-                  const text = "Je viens de voter pour la création de cette nouvelle plateforme d'IA. Rejoignez-moi pour l'aider à se lancer !";
+                  const text = "Je viens de voter pour la création de cette nouvelle plateforme d'API IA unifiée. Rejoignez-moi pour l'aider à se lancer !";
 
                   if (typeof navigator !== 'undefined' && navigator.share) {
                     navigator.share({ title, text, url })
@@ -1977,18 +1981,23 @@ export default function Home() {
                     showToast("Lien copié dans le presse-papier !");
                   }
                 }}
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] active:scale-95 flex items-center justify-center space-x-2 group"
+                className="relative w-full overflow-hidden rounded-2xl group"
               >
-                <i className="fas fa-share-nodes group-hover:scale-110 transition-transform"></i>
-                <span>Partager le lien</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-100 group-hover:opacity-90 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 blur-xl bg-gradient-to-r from-blue-600 to-purple-600 transition-opacity duration-500"></div>
+                <div className="relative w-full px-6 py-4.5 flex items-center justify-center space-x-3 text-white font-bold text-[15px] transition-transform active:scale-[0.98]">
+                  <i className="fas fa-share-nodes text-lg group-hover:rotate-12 transition-transform duration-300"></i>
+                  <span>Partager le lien</span>
+                </div>
               </button>
 
               <button
                 type="button"
                 onClick={() => setShowShareModal(false)}
-                className="w-full bg-transparent hover:bg-white/5 text-[#94A3B8] hover:text-white font-medium py-3 rounded-xl transition-colors text-sm mt-2"
+                className="w-full bg-transparent text-[#94A3B8] hover:text-white font-medium py-3 rounded-2xl transition-colors text-sm hover:bg-white/5"
               >
-                Fermer
+                Peut-être plus tard
               </button>
             </div>
           </div>
