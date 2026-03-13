@@ -1076,12 +1076,13 @@ export default function Home() {
     return String.fromCodePoint(...codePoints)
   }
 
-//   // // // const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-// //     const code = e.target.value;
-// //     const name = e.target.options[e.target.selectedIndex].dataset.name || '';
-// //
-// //     setVoteForm(prev => ({ ...prev, country: name, countryCode: code, contact: '' }))
-// //   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    const name = e.target.options[e.target.selectedIndex].dataset.name || '';
+
+    setVoteForm(prev => ({ ...prev, country: name, countryCode: code, contact: '' }))
+  }
 
   return (
     <div className="max-w-md mx-auto min-h-screen relative bg-[#0B121A] overflow-hidden pb-20">
