@@ -10,7 +10,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://lapi-unifiee.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://survey-gray-eta.vercel.app'),
   title: "L'API Unifiée | Votez pour le prochain LLM",
   description: "Accédez aux derniers modèles Claude, Gemini et ChatGPT via API à -80% du prix officiel. Votez dès maintenant pour choisir le prochain modèle intégré.",
   keywords: ["API", "LLM", "ChatGPT", "Claude", "Gemini", "IA", "Intelligence Artificielle", "Vote"],
@@ -21,11 +21,20 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     siteName: "L'API Unifiée",
+    images: [
+      {
+        url: 'https://survey-gray-eta.vercel.app/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: "L'API Unifiée",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "L'API Unifiée | Votez pour le prochain LLM",
     description: "Accédez aux derniers modèles Claude, Gemini et ChatGPT via API à -80% du prix officiel.",
+    images: ['https://survey-gray-eta.vercel.app/twitter-image.png'],
   },
 };
 
