@@ -295,13 +295,20 @@ export default function Home() {
 
     // Create CSV content
     const headers = ["Date", "Pays", "Modèle Choisi", "Cas d'usage", "Intensité", "Numéro WhatsApp"];
+        const escapeCSV = (val: string | number | null | undefined) => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val);
+      // Escape double quotes by doubling them, and wrap in double quotes
+      return `"${str.replace(/"/g, '""')}"`;
+    };
+
     const rows = adminStats.contacts.map(c => [
-        `"${c.date}"`,
-        `"${c.country}"`,
-        `"${c.model}"`,
-        `"${c.useCase || 'Non renseigné'}"`,
-        `"${c.intensity !== undefined ? c.intensity : 'N/A'}"`,
-        `"${c.contact || 'Non renseigné'}"`
+        escapeCSV(c.date),
+        escapeCSV(c.country),
+        escapeCSV(c.model),
+        escapeCSV(c.useCase || 'Non renseigné'),
+        escapeCSV(c.intensity !== undefined ? c.intensity : 'N/A'),
+        escapeCSV(c.contact || 'Non renseigné')
     ]);
 
     const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
