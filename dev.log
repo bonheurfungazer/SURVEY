@@ -9,9 +9,9 @@
 
 ✓ Starting...
 ✓ Ready in 2.3s
- GET / 200 in 2.6s (compile: 2.2s, render: 438ms)
- POST / 200 in 40ms (compile: 10ms, render: 30ms)
- GET / 200 in 102ms (compile: 5ms, render: 97ms)
+ GET / 200 in 3.5s (compile: 2.9s, render: 576ms)
+ POST / 200 in 31ms (compile: 6ms, render: 25ms)
+ GET / 200 in 105ms (compile: 5ms, render: 100ms)
+ POST / 200 in 15ms (compile: 4ms, render: 11ms)
+ GET / 200 in 147ms (compile: 6ms, render: 142ms)
  POST / 200 in 14ms (compile: 4ms, render: 10ms)
- GET / 200 in 94ms (compile: 4ms, render: 89ms)
- POST / 200 in 13ms (compile: 3ms, render: 9ms)
