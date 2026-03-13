@@ -254,6 +254,7 @@ export default function Home() {
   const [currentTab, setCurrentTab] = useState('home')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [voteSuccess, setVoteSuccess] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false)
   const [adminUsername, setAdminUsername] = useState('')
@@ -846,6 +847,7 @@ export default function Home() {
 
       setVoteSuccess(true)
       showToast("Votre vote a bien été enregistré !")
+      setShowShareModal(true)
 
       setTimeout(() => {
         setVoteSuccess(false)
@@ -1930,6 +1932,66 @@ export default function Home() {
             </div>
             </>
             )}
+        </div>
+      )}
+
+
+      {/* Share/Marketing Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-[#111823] border border-white/10 rounded-[24px] p-8 max-w-md w-full shadow-2xl relative overflow-hidden text-center transform transition-all">
+            {/* Background effects */}
+            <div className="absolute -top-32 -left-32 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i className="fas fa-check text-4xl text-green-500 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]"></i>
+            </div>
+
+            <h3 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-4 font-['Space_Grotesk']">
+              Merci pour votre vote !
+            </h3>
+
+            <p className="text-gray-300 mb-6 leading-relaxed">
+              Nous sommes ravis de votre intérêt ! Cependant, pour que cette plateforme voie le jour, nous avons besoin d'atteindre un <strong className="text-white">grand nombre de participants</strong>.
+            </p>
+
+            <div className="bg-white/5 rounded-xl p-5 mb-8 border border-white/5">
+              <p className="text-white font-semibold mb-2">Aidez-nous à lancer le projet :</p>
+              <p className="text-[#94A3B8] text-sm">Partagez ce lien avec vos amis et collègues intéressés par l'IA.</p>
+            </div>
+
+            <div className="flex flex-col space-y-3">
+              <button
+                type="button"
+                onClick={() => {
+                  const url = typeof window !== 'undefined' ? window.location.href : "https://waitlist-ai-chat.vercel.app";
+                  const title = "Découvrez cette plateforme d'IA !";
+                  const text = "Je viens de voter pour la création de cette nouvelle plateforme d'IA. Rejoignez-moi pour l'aider à se lancer !";
+
+                  if (typeof navigator !== 'undefined' && navigator.share) {
+                    navigator.share({ title, text, url })
+                      .catch(console.error);
+                  } else if (typeof navigator !== 'undefined') {
+                    navigator.clipboard.writeText(url);
+                    showToast("Lien copié dans le presse-papier !");
+                  }
+                }}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] active:scale-95 flex items-center justify-center space-x-2 group"
+              >
+                <i className="fas fa-share-nodes group-hover:scale-110 transition-transform"></i>
+                <span>Partager le lien</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowShareModal(false)}
+                className="w-full bg-transparent hover:bg-white/5 text-[#94A3B8] hover:text-white font-medium py-3 rounded-xl transition-colors text-sm mt-2"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
