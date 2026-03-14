@@ -722,8 +722,10 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                 showToast("Cet email est déjà utilisé. Veuillez vous connecter.", "error")
             } else {
-                setShowVerificationPopup(true);
                 setShowLoginModal(false);
+                setTimeout(() => {
+                    setShowVerificationPopup(true);
+                }, 500);
             }
         } else {
             const { error } = await supabase.auth.signInWithPassword({
@@ -1153,8 +1155,8 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
 
 
       {showVerificationPopup && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-500">
-            <div className="bg-[#111823] border border-[#3B82F6]/30 rounded-2xl p-8 w-full max-w-sm relative shadow-[0_0_40px_rgba(59,130,246,0.2)] text-center flex flex-col items-center animate-in zoom-in-95 duration-500 delay-150">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-700">
+            <div className="bg-[#111823] border border-[#3B82F6]/30 rounded-2xl p-8 w-full max-w-sm relative shadow-[0_0_40px_rgba(59,130,246,0.2)] text-center flex flex-col items-center animate-in zoom-in-95 duration-700 delay-200">
                 <div className="w-16 h-16 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 flex items-center justify-center mb-6 text-[#3B82F6] text-3xl shadow-[0_0_20px_rgba(59,130,246,0.3)] animate-pulse">
                     <i className="fas fa-envelope-open-text"></i>
                 </div>
