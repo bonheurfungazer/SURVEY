@@ -1,0 +1,19 @@
+
+> my-app@0.1.0 start
+> next start
+
+▲ Next.js 16.1.6
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 933ms
+⨯ Error: ADMIN_SECRET_TOKEN environment variable is not set
+    at module evaluation (.next/server/chunks/ssr/_1ccc53a4._.js:41:48153)
+    at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:740:9)
+    at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:763:12)
+    at Context.commonJsRequire [as r] (.next/server/chunks/ssr/[turbopack]_runtime.js:249:12)
+    at async m (.next/server/chunks/ssr/_b1c71f8f._.js:1:7097) {
+  digest: '1589458780'
+}
+Killed
