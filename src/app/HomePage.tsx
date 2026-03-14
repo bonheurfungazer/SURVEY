@@ -822,13 +822,13 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
       return
     }
 
-    const dialCode = countryDialCodes[voteForm.countryCode] || '';
-    const fullContact = dialCode + voteForm.contact;
-
     if (!voteForm.contact || !isValidPhoneNumber(voteForm.contact, voteForm.countryCode as CountryCode)) {
       showToast("idiots la méchanceté te donne quoi , comment pense tu que tu sera recontacter?", 'error')
       return
     }
+
+    const dialCode = countryDialCodes[voteForm.countryCode] || '';
+    const formattedNumber = dialCode + voteForm.contact;
 
     setIsSubmitting(true)
     try {
@@ -842,7 +842,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
             model_choice: voteForm.model,
             intensity: voteForm.intensity,
             use_case: voteForm.useCase,
-            contact_info: fullContact,
+            contact_info: formattedNumber,
             is_real_user: true
           }
         ])
