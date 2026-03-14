@@ -824,12 +824,12 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
 
     const validationResult = validatePhoneNumberLength(voteForm.contact, voteForm.countryCode as CountryCode);
     if (validationResult === 'TOO_LONG') {
-      showToast("idiots la méchanceté de donne quoi , comment pense tu que tu sera recontacter?", 'error')
+      showToast("idiots la méchanceté te donne quoi , comment pense tu que tu sera recontacter?", 'error')
       return
     }
 
     if (!voteForm.contact || !isValidPhoneNumber(voteForm.contact, voteForm.countryCode as CountryCode)) {
-      showToast("idiots la méchanceté de donne quoi , comment pense tu que tu sera recontacter?", 'error')
+      showToast("idiots la méchanceté te donne quoi , comment pense tu que tu sera recontacter?", 'error')
       return
     }
 
