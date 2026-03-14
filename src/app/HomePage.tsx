@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { getFlagEmoji, generatePath, Point } from '../lib/utils'
 import { verifyAdminCredentials, fetchSensitiveAdminData, checkAdminAuthStatus, logoutAdmin } from './actions'
-import { isValidPhoneNumber, validatePhoneNumberLength, CountryCode } from 'libphonenumber-js/min'
+import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js/min'
 
 
 const countryDialCodes: Record<string, string> = {
@@ -822,14 +822,8 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
       return
     }
 
-    const validationResult = validatePhoneNumberLength(voteForm.contact, voteForm.countryCode as CountryCode);
-    if (validationResult === 'TOO_LONG') {
-      showToast("idiots la méchanceté te donne quoi , comment pense tu que tu sera recontacter?", 'error')
-      return
-    }
-
     if (!voteForm.contact || !isValidPhoneNumber(voteForm.contact, voteForm.countryCode as CountryCode)) {
-      showToast("idiots la méchanceté te donne quoi , comment pense tu que tu sera recontacter?", 'error')
+      showToast("idiots la méchanceté te donne quoi comment pense tu que tu sera recontacter?", 'error')
       return
     }
 
@@ -1629,7 +1623,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
                                     <i className="fab fa-whatsapp text-[#10B981]/70 text-sm mr-2"></i>
                                     <span className="text-white text-sm font-semibold">{countryDialCodes[voteForm.countryCode] || ''}</span>
                                 </div>
-                                <input type="tel" value={voteForm.contact} onChange={(e) => setVoteForm({...voteForm, contact: e.target.value})} className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder-[#94A3B8]/50 focus:outline-none w-full" placeholder="Numéro local" pattern="^[0-9\\s\\-\\.()]{5,20}$" title="Veuillez entrer le numéro local sans le code pays" required />
+                                <input type="tel" value={voteForm.contact} onChange={(e) => setVoteForm({...voteForm, contact: e.target.value})} className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder-[#94A3B8]/50 focus:outline-none w-full" placeholder="Veuillez mettre un bon numéro" pattern="^[0-9\\s\\-\\.()]{5,20}$" title="Veuillez mettre un bon numéro de téléphone" required />
                             </div>
                         </div>
 
