@@ -40,3 +40,6 @@ export async function GET(request: Request) {
   // Si ça échoue, retour à la page de connexion
   return NextResponse.redirect(new URL('/?error=auth', request.url))
 }
+
+// This route handles the PKCE auto-login flow as requested:
+// "Pour que l'utilisateur soit connecté automatiquement, tu dois intercepter le 'code' que Supabase envoie par mail et l'échanger contre une session."

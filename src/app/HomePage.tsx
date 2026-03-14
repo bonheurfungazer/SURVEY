@@ -711,13 +711,18 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
     try {
         if (isSignUp) {
             const { data, error } = await supabase.auth.signUp({
-                options: {
-                  emailRedirectTo: "https://survey-gray-eta.vercel.app/auth/confirm",
-                },
                 email: loginEmail,
                 password: loginPassword,
+                options: {
+                  // On force la redirection vers ta nouvelle route de confirmation
+                  emailRedirectTo: 'https://survey-gray-eta.vercel.app/auth/confirm',
+                },
             })
             if (error) throw error
+
+            if (data.session) {
+                await supabase.auth.signOut();
+            }
 
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                 showToast("Cet email est déjà utilisé. Veuillez vous connecter.", "error")
