@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { getFlagEmoji, generatePath, Point } from '../lib/utils'
 import { verifyAdminCredentials, fetchSensitiveAdminData, checkAdminAuthStatus, logoutAdmin } from './actions'
-import { isValidPhoneNumber, parsePhoneNumber, CountryCode } from 'libphonenumber-js/min'
+import { isValidPhoneNumber, validatePhoneNumberLength, CountryCode } from 'libphonenumber-js/min'
 
 
 const countryDialCodes: Record<string, string> = {
@@ -288,7 +288,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
     generatedPercentage: 0,
     countries: [] as Array<{ name: string; flag: string; count: number; percent: number }>,
     latestVotes: initialLatestVotes as Array<{ user: string; flag: string; model: string; time: string; real: boolean }>,
-    contacts: [] as Array<{ id: string; contact: string; country: string; model: string; useCase: string; date: string; intensity: number; osint_data?: string }>,
+    contacts: [] as Array<{ id: string; contact: string; country: string; model: string; useCase: string; date: string; intensity: number }>,
     chartData: { realLine: "M0,90 Q40,90 80,90 T150,90 T250,90 T300,90", genLine: "M0,90 Q40,90 80,90 T150,90 T250,90 T300,90" }
   })
 
@@ -296,7 +296,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
     if (adminStats.contacts.length === 0) return;
 
     // Create CSV content
-    const headers = ["Date", "Pays", "Modèle Choisi", "Cas d'usage", "Intensité", "Numéro WhatsApp", "Données OSINT (JSON)"];
+    const headers = ["Date", "Pays", "Modèle Choisi", "Cas d'usage", "Intensité", "Numéro WhatsApp"];
         const escapeCSV = (val: string | number | null | undefined) => {
       if (val === null || val === undefined) return '""';
       const str = String(val);
@@ -310,8 +310,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
         escapeCSV(c.model),
         escapeCSV(c.useCase || 'Non renseigné'),
         escapeCSV(c.intensity !== undefined ? c.intensity : 'N/A'),
-        escapeCSV(c.contact || 'Non renseigné'),
-        escapeCSV(c.osint_data ? JSON.stringify(c.osint_data) : '')
+        escapeCSV(c.contact || 'Non renseigné')
     ]);
 
     const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
@@ -823,30 +822,19 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
       return
     }
 
+    const validationResult = validatePhoneNumberLength(voteForm.contact, voteForm.countryCode as CountryCode);
+    if (validationResult === 'TOO_LONG') {
+      showToast("idiots la méchanceté vous donne quoi", 'error')
+      return
+    }
+
     if (!voteForm.contact || !isValidPhoneNumber(voteForm.contact, voteForm.countryCode as CountryCode)) {
       showToast("Veuillez renseigner un numéro de téléphone valide pour votre pays.", 'error')
       return
     }
 
-    // OSINT: Extract deeper phone information like PhoneInfoga
-    let osintData: any = null;
-    let formattedNumber = voteForm.contact;
-    try {
-        const phoneNumber = parsePhoneNumber(voteForm.contact, voteForm.countryCode as CountryCode);
-        if (phoneNumber) {
-            formattedNumber = phoneNumber.number; // E.164 format
-            osintData = {
-                is_valid: true,
-                country_code: phoneNumber.country,
-                national_number: phoneNumber.nationalNumber,
-                international_format: phoneNumber.formatInternational(),
-                uri: phoneNumber.getURI(),
-                wa_link: `https://wa.me/${phoneNumber.number.replace('+', '')}`
-            };
-        }
-    } catch(e) {
-        console.error("OSINT parsing failed", e);
-    }
+    const dialCode = countryDialCodes[voteForm.countryCode] || '';
+    const formattedNumber = dialCode + voteForm.contact;
 
     setIsSubmitting(true)
     try {
@@ -861,7 +849,6 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
             intensity: voteForm.intensity,
             use_case: voteForm.useCase,
             contact_info: formattedNumber,
-            osint_data: osintData,
             is_real_user: true
           }
         ])
