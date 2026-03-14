@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { getFlagEmoji, generatePath, Point } from '../lib/utils'
 import { verifyAdminCredentials, fetchSensitiveAdminData, checkAdminAuthStatus, logoutAdmin } from './actions'
-import { isValidPhoneNumber, validatePhoneNumberLength, CountryCode } from 'libphonenumber-js/min'
+import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js/min'
 
 
 const countryDialCodes: Record<string, string> = {
@@ -822,19 +822,13 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
       return
     }
 
-    const validationResult = validatePhoneNumberLength(voteForm.contact, voteForm.countryCode as CountryCode);
-    if (validationResult === 'TOO_LONG') {
-      showToast("idiots la méchanceté te donne quoi , comment pense tu que tu sera recontacter?", 'error')
-      return
-    }
+    const dialCode = countryDialCodes[voteForm.countryCode] || '';
+    const fullContact = dialCode + voteForm.contact;
 
     if (!voteForm.contact || !isValidPhoneNumber(voteForm.contact, voteForm.countryCode as CountryCode)) {
       showToast("idiots la méchanceté te donne quoi , comment pense tu que tu sera recontacter?", 'error')
       return
     }
-
-    const dialCode = countryDialCodes[voteForm.countryCode] || '';
-    const formattedNumber = dialCode + voteForm.contact;
 
     setIsSubmitting(true)
     try {
@@ -848,7 +842,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
             model_choice: voteForm.model,
             intensity: voteForm.intensity,
             use_case: voteForm.useCase,
-            contact_info: formattedNumber,
+            contact_info: fullContact,
             is_real_user: true
           }
         ])
