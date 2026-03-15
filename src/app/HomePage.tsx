@@ -712,7 +712,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
         if (isSignUp) {
             const { data, error } = await supabase.auth.signUp({
                 options: {
-                  emailRedirectTo: "https://survey-gray-eta.vercel.app/auth/confirm",
+                  emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/confirm` : '',
                 },
                 email: loginEmail,
                 password: loginPassword,
@@ -722,6 +722,8 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                 showToast("Cet email est déjà utilisé. Veuillez vous connecter.", "error")
             } else {
+                // Enforce sign out to require email verification
+                await supabase.auth.signOut()
                 setShowVerificationPopup(true);
                 setShowLoginModal(false);
             }
