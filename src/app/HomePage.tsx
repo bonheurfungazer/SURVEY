@@ -267,7 +267,6 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
   const [isLoggingIn, setIsLoggingIn] = useState(false)
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
-  const [showVerificationPopup, setShowVerificationPopup] = useState(false)
 
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [toastType, setToastType] = useState<'success' | 'error'>('success')
@@ -637,15 +636,6 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
 
       fetchAdminStats()
 
-      // Check if URL has ?verified=true for successful confirmation
-      if (typeof window !== 'undefined') {
-          const params = new URLSearchParams(window.location.search);
-          if (params.get('verified') === 'true') {
-              showToast("Email confirmé avec succès ! Vous êtes connecté.", "success");
-              // Remove query param to clean URL without refreshing page
-              window.history.replaceState({}, document.title, window.location.pathname);
-          }
-      }
 
       // If admin is already authenticated on load, fetch sensitive data
       if (isAdmin) {
@@ -711,9 +701,6 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
     try {
         if (isSignUp) {
             const { data, error } = await supabase.auth.signUp({
-                options: {
-                  emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/confirm` : '',
-                },
                 email: loginEmail,
                 password: loginPassword,
             })
@@ -722,10 +709,8 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                 showToast("Cet email est déjà utilisé. Veuillez vous connecter.", "error")
             } else {
-                // Enforce sign out to require email verification
-                await supabase.auth.signOut()
-                setShowVerificationPopup(true);
-                setShowLoginModal(false);
+                showToast("Inscription réussie !")
+                setShowLoginModal(false)
             }
         } else {
             const { error } = await supabase.auth.signInWithPassword({
@@ -1154,25 +1139,7 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
       )}
 
 
-      {showVerificationPopup && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-500">
-            <div className="bg-[#111823] border border-[#3B82F6]/30 rounded-2xl p-8 w-full max-w-sm relative shadow-[0_0_40px_rgba(59,130,246,0.2)] text-center flex flex-col items-center animate-in zoom-in-95 duration-500 delay-150">
-                <div className="w-16 h-16 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 flex items-center justify-center mb-6 text-[#3B82F6] text-3xl shadow-[0_0_20px_rgba(59,130,246,0.3)] animate-pulse">
-                    <i className="fas fa-envelope-open-text"></i>
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-3">Vérifiez votre boîte mail</h2>
-                <p className="text-[#94A3B8] text-sm leading-relaxed mb-8">
-                    Un lien de confirmation a été envoyé à <span className="text-white font-semibold">{loginEmail}</span>. <br/>Veuillez cliquer sur ce lien pour activer votre compte.
-                </p>
-                <button
-                    onClick={() => setShowVerificationPopup(false)}
-                    className="w-full bg-[#1A2332] hover:bg-[#1E293B] border border-white/10 text-white font-bold py-3.5 rounded-xl text-sm transition-colors"
-                >
-                    J'ai compris
-                </button>
-            </div>
-        </div>
-      )}
+
 
 
       {toastMessage && (
