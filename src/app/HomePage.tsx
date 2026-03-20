@@ -992,8 +992,6 @@ export default function Home({ initialTotalVotes = 0, initialLatestVotes = [] }:
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'votes' },
         (payload) => {
-          console.log('Nouveau vote en temps réel!', payload)
-
           setAdminStats(prev => {
               const newVote = {
                   user: 'usr_' + payload.new.id.substring(0, 5),
